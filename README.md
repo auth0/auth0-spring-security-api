@@ -27,6 +27,10 @@ compile 'com.auth0:auth0-spring-security:0.0.1'
 
 ## Learn how to use it
 
+Right now, the best way to learn how to use this library is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample)
+and the README for that sample. Our official documentation shall at the link below shall be fully updated shortly, together with Maven publication of the latest release. For
+dev testing, just install locally with maven to get started right away.
+
 [Please read this tutorial](https://docs.auth0.com/server-apis/java-spring-security-api) to learn how to use this SDK.
 
 ---
