@@ -2,6 +2,7 @@ package com.auth0.spring.security.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,8 +13,18 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
+/**
+ * Lightweight default configuration that offers basic authorization checks for authenticated
+ * users on secured endpoint, and sets up a Principal user object with granted authorities
+ *
+ * For simple apps, this is sufficient, however for applications wishing to specify fine-grained
+ * endpoint access restrictions, use Role / Group level endpoint authorization etc, then this configuration
+ * should be disabled and a copy, augmented with your own requirements provided. See Sample app for example
+ *
+ */
 @Configuration
 @EnableWebSecurity(debug = true)
+@ConditionalOnProperty(prefix = "auth0", name = "defaultAuth0ApiSecurityEnabled")
 public class Auth0Configuration extends WebSecurityConfigurerAdapter {
 
     @Value(value = "${auth0.clientId}")

@@ -1,5 +1,6 @@
 package com.auth0.spring.security.api;
 
+import com.auth0.Auth0Exception;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
@@ -25,13 +26,13 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
         Assert.isInstanceOf(java.util.Map.class, object, "Claims object is not a java.util.Map");
         try {
             final JWTSigner jwtSigner = new JWTSigner(Base64.decodeBase64(clientSecret));
-            final HashMap<String, Object> claims = new HashMap<String, Object>();
+            final HashMap<String, Object> claims = new HashMap<>();
             claims.putAll((Map) object);
             claims.put("exp", expiration);
             final String token = jwtSigner.sign(claims);
             return token;
         } catch (Exception e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("Token generation error", e);
         }
     }
 
@@ -45,21 +46,21 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
             final Map<String, String> map = new ObjectMapper().readValue(payload, Map.class);
             return map;
         } catch (InvalidKeyException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("InvalidKeyException during decodeToken operation", e);
         } catch (NoSuchAlgorithmException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("NoSuchAlgorithmException during decodeToken operation", e);
         } catch (IllegalStateException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("IllegalStateException during decodeToken operation", e);
         } catch (SignatureException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("SignatureException during decodeToken operation", e);
         } catch (IOException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("IOException during decodeToken operation", e);
         } catch (JWTVerifyException e) {
-            throw new Auth0RuntimeException(e);
+            throw new Auth0Exception("JWTVerifyException during decodeToken operation", e);
         }
     }
 
-   @Override
+    @Override
     public void afterPropertiesSet() throws Exception {
         Assert.notNull(clientSecret, "The client secret is not set for " + this.getClass());
         Assert.notNull(clientId, "The client id is not set for " + this.getClass());
