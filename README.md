@@ -22,7 +22,7 @@ Get Auth0 Spring Security API via Maven:
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-security:0.0.1'
+compile 'com.auth0:auth0-spring-security-api:0.0.1'
 ```
 
 ## Learn how to use it
