@@ -42,7 +42,7 @@ public class Auth0UserDetails implements UserDetails {
             this.emailVerified = Boolean.valueOf(map.get("email_verified").toString());
         }
         //set authorities
-        this.authorities = new ArrayList<GrantedAuthority>();
+        this.authorities = new ArrayList<>();
         if (map.containsKey("roles")) {
             try {
                 final ArrayList<String> roles = (ArrayList<String>) map.get("roles");
@@ -53,10 +53,6 @@ public class Auth0UserDetails implements UserDetails {
                 e.printStackTrace();
                 logger.error("Error in casting the roles object");
             }
-        }
-        //By default if nothing is added
-        if (this.authorities.isEmpty()) {
-            this.authorities.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
     }
 
