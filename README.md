@@ -7,6 +7,29 @@
 A modern Java Spring library that allows you to use Auth0 with Spring Security. Leverages Spring Boot dependencies.
 Validates the JWT from Auth0 in every API call to assert authentication according to configuration.
 
+This library is suitable for headless APIs and SPA (single page application) backend end server scenarios.
+
+This library provides you your application with easy access to able to:
+
+ 1. Configure and run Java based Spring API server with Auth0 and Spring Security
+ 2. Use 100% Java Configuration (Annotations)
+ 3. Secure one or more URL endpoints with Role / Authority based permissions (ROLE_USER, ROLE_ADMIN etc)
+ 4. Secure Java Services using method level security annotations for role based access control
+
+If you are planning to use this in conjunction with a Single Page Application (SPA), then there are a couple of different
+architectures you might consider:
+
+1). You could either co-locate the SPA inside the same Spring Boot app from which you use this library
+(drop your SPA code under /src/main/resources as you would for any Spring Boot application - and then the
+SPA talks directly to its web-server (Spring Boot) using JWT authorization on all requests to secured endpoints
+as defined by your AppConfig ( just augment here ).
+
+2). You could have a separate server process that acts as the web-server for your SPA app (Node.js / Express.js is a
+popular choice here - doesn't have to be Java), and then use the Auth0 / Java Spring Boot API running as a
+separate web server to expose API endpoints as required for server-side functions of our SPA application.
+This is a popular architecture style, and Cross Origin support is baked into the API config for that purpose.
+
+
 ## Download
 
 Get Auth0 Spring Security API via Maven:
@@ -32,6 +55,7 @@ and the README for that sample. Our official documentation shall at the link bel
 dev testing, just install locally with maven to get started right away.
 
 [Please read this tutorial](https://docs.auth0.com/server-apis/java-spring-security-api) to learn how to use this SDK.
+
 
 ---
 
