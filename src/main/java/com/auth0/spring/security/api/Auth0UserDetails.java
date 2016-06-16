@@ -6,9 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Implementation of UserDetails in compliance with the decoded object returned by the Auth0 JWT
@@ -26,7 +24,7 @@ public class Auth0UserDetails implements UserDetails {
 
 
     @SuppressWarnings("unchecked")
-    public Auth0UserDetails(Map<String, Object> map) {
+    public Auth0UserDetails(final Map<String, Object> map, final Auth0AuthorityStrategy authorityStrategy) {
         this.details = map;
         if (map.containsKey("email")) {
             this.username = map.get("email").toString();
@@ -43,11 +41,21 @@ public class Auth0UserDetails implements UserDetails {
         }
         //set authorities
         this.authorities = new ArrayList<>();
-        if (map.containsKey("roles")) {
+        final String authorityStrategyName = authorityStrategy.toString();
+        if (map.containsKey(authorityStrategyName)) {
+            // here, we differentiate between "scope" which is a space delimited string & "roles" and "groups" which are a list
             try {
-                final ArrayList<String> roles = (ArrayList<String>) map.get("roles");
-                for (final String role : roles) {
-                    this.authorities.add(new SimpleGrantedAuthority(role));
+                List<String> authorities = new ArrayList<>();
+                if (Auth0AuthorityStrategy.SCOPE.equals(authorityStrategy)) {
+                    final String authoritiesStr = (String) map.get(authorityStrategyName);
+                    if (authoritiesStr != null) {
+                        authorities = Arrays.asList(authoritiesStr.split("\\s+"));
+                    }
+                } else {
+                    authorities = (ArrayList<String>) map.get(authorityStrategyName);
+                }
+                for (final String authority : authorities) {
+                    this.authorities.add(new SimpleGrantedAuthority(authority));
                 }
             } catch (java.lang.ClassCastException e) {
                 e.printStackTrace();

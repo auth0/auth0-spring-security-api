@@ -27,10 +27,15 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
     private static final AuthenticationException AUTH_ERROR =
             new Auth0TokenException("Authentication Error");
 
-    private JWTVerifier jwtVerifier = null;
-    private String clientSecret = null;
-    private String clientId = null;
-    private String securedRoute = null;
+    private JWTVerifier jwtVerifier;
+    private String domain;
+    private String issuer;
+    private String clientId;
+    private String clientSecret;
+    private String securedRoute;
+    private boolean base64EncodedSecret;
+    private Auth0AuthorityStrategy authorityStrategy;
+
     private final Log logger = LogFactory.getLog(getClass());
 
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
@@ -43,7 +48,7 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
             final Map<String, Object> decoded = jwtVerifier.verify(token);
             logger.debug("Decoded JWT token" + decoded);
             tokenAuth.setAuthenticated(true);
-            tokenAuth.setPrincipal(new Auth0UserDetails(decoded));
+            tokenAuth.setPrincipal(new Auth0UserDetails(decoded, authorityStrategy));
             tokenAuth.setDetails(decoded);
             return authentication;
         } catch (InvalidKeyException e) {
@@ -84,17 +89,39 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
         }
         if (securedRoute == null) {
             throw new RuntimeException(
-                    "You must set which route pattern is used to check for users so that they must be authenticated");
+                    "You must set the route pattern used to check for authenticated access");
         }
-        jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId);
+        // Auth0 Client Secrets are currently Base64 encoded,
+        // Auth0 Resource Server Signing Secrets are not Base64 encoded
+        if (base64EncodedSecret) {
+            jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId, issuer);
+        } else {
+            jwtVerifier = new JWTVerifier(clientSecret, clientId, issuer);
+        }
     }
 
-    public String getSecuredRoute() {
-        return securedRoute;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setSecuredRoute(String securedRoute) {
-        this.securedRoute = securedRoute;
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getIssuer() {
+        return issuer;
+    }
+
+    public void setIssuer(String issuer) {
+        this.issuer = issuer;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void setClientId(String clientId) {
+        this.clientId = clientId;
     }
 
     public String getClientSecret() {
@@ -105,12 +132,28 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
         this.clientSecret = clientSecret;
     }
 
-    public String getClientId() {
-        return clientId;
+    public String getSecuredRoute() {
+        return securedRoute;
     }
 
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
+    public void setSecuredRoute(String securedRoute) {
+        this.securedRoute = securedRoute;
+    }
+
+    public Auth0AuthorityStrategy getAuthorityStrategy() {
+        return authorityStrategy;
+    }
+
+    public void setAuthorityStrategy(Auth0AuthorityStrategy authorityStrategy) {
+        this.authorityStrategy = authorityStrategy;
+    }
+
+    public boolean isBase64EncodedSecret() {
+        return base64EncodedSecret;
+    }
+
+    public void setBase64EncodedSecret(boolean base64EncodedSecret) {
+        this.base64EncodedSecret = base64EncodedSecret;
     }
 
 }

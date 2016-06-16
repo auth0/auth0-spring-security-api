@@ -18,7 +18,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { TestAuth0Configuration.class, Auth0Configuration.class})
+@SpringApplicationConfiguration(classes = { TestAuth0Configuration.class, Auth0SecurityConfig.class})
 @WebAppConfiguration
 public abstract class AbstractAuth0AuthenticationTest {
 
