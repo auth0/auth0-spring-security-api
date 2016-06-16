@@ -24,6 +24,8 @@ import com.auth0.jwt.JWTVerifyException;
 public class Auth0AuthenticationProvider implements AuthenticationProvider,
         InitializingBean {
 
+    private final Log logger = LogFactory.getLog(getClass());
+
     private static final AuthenticationException AUTH_ERROR =
             new Auth0TokenException("Authentication Error");
 
@@ -36,7 +38,6 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
     private boolean base64EncodedSecret;
     private Auth0AuthorityStrategy authorityStrategy;
 
-    private final Log logger = LogFactory.getLog(getClass());
 
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
 
@@ -84,11 +85,11 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
 
     public void afterPropertiesSet() throws Exception {
         if ((clientSecret == null) || (clientId == null)) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "client secret and client id are not set for Auth0AuthenticationProvider");
         }
         if (securedRoute == null) {
-            throw new RuntimeException(
+            throw new IllegalStateException(
                     "You must set the route pattern used to check for authenticated access");
         }
         // Auth0 Client Secrets are currently Base64 encoded,

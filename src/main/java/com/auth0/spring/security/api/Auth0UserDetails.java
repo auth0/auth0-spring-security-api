@@ -39,7 +39,10 @@ public class Auth0UserDetails implements UserDetails {
         if (map.containsKey("email")) {
             this.emailVerified = Boolean.valueOf(map.get("email_verified").toString());
         }
-        //set authorities
+        setupGrantedAuthorities(map, authorityStrategy);
+    }
+
+    private void setupGrantedAuthorities(final Map<String, Object> map, final Auth0AuthorityStrategy authorityStrategy) {
         this.authorities = new ArrayList<>();
         final String authorityStrategyName = authorityStrategy.toString();
         if (map.containsKey(authorityStrategyName)) {
@@ -57,7 +60,7 @@ public class Auth0UserDetails implements UserDetails {
                 for (final String authority : authorities) {
                     this.authorities.add(new SimpleGrantedAuthority(authority));
                 }
-            } catch (java.lang.ClassCastException e) {
+            } catch (ClassCastException e) {
                 e.printStackTrace();
                 logger.error("Error in casting the roles object");
             }

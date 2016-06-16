@@ -65,7 +65,7 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
     public Auth0AuthenticationProvider auth0AuthenticationProvider() {
         // First check the authority strategy configured for the API
         if (!Auth0AuthorityStrategy.contains(this.authorityStrategy)) {
-            throw new RuntimeException("Configuration error, illegal authority strategy");
+            throw new IllegalStateException("Configuration error, illegal authority strategy");
         }
         final Auth0AuthorityStrategy authorityStrategy = Auth0AuthorityStrategy.valueOf(this.authorityStrategy);
         final Auth0AuthenticationProvider authenticationProvider = new Auth0AuthenticationProvider();
