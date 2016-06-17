@@ -54,8 +54,13 @@ Perhaps the best way to learn how to use this library is to study the [Auth0 Spr
 and the README for that sample. Information on configuration and extension points is also provided in this README document below together with a link
 to our tutorial on using this library.
 
-
 [Please read this tutorial](https://auth0.com/docs/quickstart/backend/java-spring-security/) to learn how to use this SDK.
+
+
+Note: If you are planning to use / are using the [Auth0 Resource Server (API Auth)](https://auth0.com/docs/api-auth/using-the-auth0-dashboard) as part of the
+[API Authentication and Authorization](https://auth0.com/docs/api-auth) flows, then please study the
+[Auth0 Spring Security API Resource Server Sample](https://github.com/auth0-samples/auth0-spring-security-api-resource-server-sample) and the README for that sample.
+Note, the Resource Server sample also depends almost exclusively on this library - and behaves almost identically with the exception of configuraiton related changes.
 
 ---
 
