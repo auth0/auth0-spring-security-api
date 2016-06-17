@@ -149,14 +149,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class AppConfig extends Auth0SecurityConfig {
 
-    /**
-     * Provides Auth0 API access
-     */
-    @Bean
-    public Auth0Client auth0Client() {
-        return new Auth0Client(clientId, issuer);
-    }
-
     @Override
     protected void authorizeRequests(final HttpSecurity http) throws Exception {
         http.authorizeRequests()
