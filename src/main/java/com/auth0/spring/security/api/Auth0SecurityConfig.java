@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -89,6 +90,22 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
         final Auth0AuthenticationFilter filter = new Auth0AuthenticationFilter();
         filter.setEntryPoint(entryPoint);
         return filter;
+    }
+
+    /**
+     * We do this to ensure our Filter is only loaded once into Application Context
+     *
+     * If using Spring Boot, any GenericFilterBean in the context will be automatically added to the filter chain.
+     * Since we want to support Servlet 2.x and 3.x we should not extend OncePerRequestFilter therefore instead
+     * we explicitly define FilterRegistrationBean and disable.
+     *
+     */
+    @Bean(name = "auth0AuthenticationFilterRegistration")
+    public FilterRegistrationBean auth0AuthenticationFilterRegistration(final Auth0AuthenticationFilter filter) {
+        final FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean();
+        filterRegistrationBean.setFilter(filter);
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
     }
 
     @Override
