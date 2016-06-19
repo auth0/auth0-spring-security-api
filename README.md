@@ -98,10 +98,9 @@ Here is a breakdown of what each attribute means:
 `auth0.securedRoute`: - This is the URL pattern to secure a URL endpoint. Should start with `/` Note, if you are using the default library configuration (not overriding with
 your own) which just secures a single, specific context path then this value is important. However, if you are building an application which may have several different
 secured endpoints, or you don't want / need to specify an explicit configuration value in this .properties file then just set the value to something that signifies this.
-Perhaps `auth0.securedRoute: UNUSED`. Then just ignore the `securedRoute` entirely when you specify your own configuration
-- see the section `Extending Auth0SecurityConfig` below for further info. The takeaway message is that this property value is a convenience for the developer to configure
-an endpoint by context path (.eg all URLS with `/api/v1/` in their context path) - but there is no obligation to actually reference this property in your own HttpSecurity
-configuration.
+Perhaps `auth0.securedRoute: UNUSED`. Then just ignore the `securedRoute` entirely when you specify your own configuration. See the section `Extending Auth0SecurityConfig`
+below for further info. The takeaway message is that this property value is a convenience for the developer to configure an endpoint by context path
+(.eg all URLS with `/api/v1/` in their context path) - but there is no obligation to actually reference this property in your own HttpSecurity configuration.
 
 `auth0.base64EncodedSecret` - This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `true`
 
