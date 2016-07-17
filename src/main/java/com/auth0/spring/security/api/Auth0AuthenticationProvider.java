@@ -1,11 +1,9 @@
 package com.auth0.spring.security.api;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.SignatureException;
-import java.util.Map;
-
+import com.auth0.jwt.Algorithm;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.internal.org.apache.commons.lang3.Validate;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,8 +12,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.JWTVerifyException;
+import java.io.File;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
+import java.security.SignatureException;
+import java.util.Map;
+
+import static com.auth0.jwt.pem.PemReader.readPublicKey;
 
 /**
  * Class that verifies the JWT token and when valid, it will set
@@ -24,10 +29,9 @@ import com.auth0.jwt.JWTVerifyException;
 public class Auth0AuthenticationProvider implements AuthenticationProvider,
         InitializingBean {
 
-    private final Log logger = LogFactory.getLog(getClass());
+    private static final Log logger = LogFactory.getLog(Auth0AuthenticationProvider.class);
 
-    private static final AuthenticationException AUTH_ERROR =
-            new Auth0TokenException("Authentication Error");
+    private static final AuthenticationException AUTH_ERROR = new Auth0TokenException("Authentication Error");
 
     private JWTVerifier jwtVerifier;
     private String domain;
@@ -37,6 +41,8 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
     private String securedRoute;
     private boolean base64EncodedSecret;
     private Auth0AuthorityStrategy authorityStrategy;
+    private Algorithm signingAlgorithm;
+    private String publicKeyPath;
 
 
     public Authentication authenticate(final Authentication authentication) throws AuthenticationException {
@@ -90,71 +96,109 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider,
         }
         if (securedRoute == null) {
             throw new IllegalStateException(
-                    "You must set the route pattern used to check for authenticated access");
+                    "You must set which route pattern is used to check for users so that they must be authenticated");
         }
-        // Auth0 Client Secrets are currently Base64 encoded,
-        // Auth0 Resource Server Signing Secrets are not Base64 encoded
-        if (base64EncodedSecret) {
-            jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId, issuer);
-        } else {
-            jwtVerifier = new JWTVerifier(clientSecret, clientId, issuer);
+        switch (signingAlgorithm) {
+            case HS256:
+            case HS384:
+            case HS512:
+                // Auth0 Client Secrets are currently Base64 encoded, Resource Server Signing Secret is NOT Base64 encoded
+                if (base64EncodedSecret) {
+                    jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId, issuer);
+                } else {
+                    jwtVerifier = new JWTVerifier(clientSecret, clientId, issuer);
+                }
+                return;
+            case RS256:
+            case RS384:
+            case RS512:
+                Validate.notEmpty(publicKeyPath);
+                try {
+                    final ClassLoader classLoader = getClass().getClassLoader();
+                    File file = new File(classLoader.getResource(publicKeyPath).getFile());
+                    final String publicKeyRealPath = file.getAbsolutePath();
+//                    final String publicKeyRealPath = servletContext.getRealPath(publicKeyPath);
+                    final PublicKey publicKey = readPublicKey(publicKeyRealPath);
+                    Validate.notNull(publicKey);
+                    jwtVerifier = new JWTVerifier(publicKey, clientId);
+                    return;
+                } catch (Exception e) {
+                    throw new IllegalStateException(e.getMessage(), e.getCause());
+                }
+            default:
+                throw new IllegalStateException("Unsupported signing method: " + signingAlgorithm.getValue());
         }
     }
 
-    public String getDomain() {
+    protected String getDomain() {
         return domain;
     }
 
-    public void setDomain(String domain) {
+    protected void setDomain(String domain) {
         this.domain = domain;
     }
 
-    public String getIssuer() {
+    protected String getIssuer() {
         return issuer;
     }
 
-    public void setIssuer(String issuer) {
+    protected void setIssuer(String issuer) {
         this.issuer = issuer;
     }
 
-    public String getClientId() {
+    protected String getClientId() {
         return clientId;
     }
 
-    public void setClientId(String clientId) {
+    protected void setClientId(String clientId) {
         this.clientId = clientId;
     }
 
-    public String getClientSecret() {
+    protected String getClientSecret() {
         return clientSecret;
     }
 
-    public void setClientSecret(String clientSecret) {
+    protected void setClientSecret(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
-    public String getSecuredRoute() {
+    protected String getSecuredRoute() {
         return securedRoute;
     }
 
-    public void setSecuredRoute(String securedRoute) {
+    protected void setSecuredRoute(String securedRoute) {
         this.securedRoute = securedRoute;
     }
 
-    public Auth0AuthorityStrategy getAuthorityStrategy() {
+    protected Auth0AuthorityStrategy getAuthorityStrategy() {
         return authorityStrategy;
     }
 
-    public void setAuthorityStrategy(Auth0AuthorityStrategy authorityStrategy) {
+    protected void setAuthorityStrategy(Auth0AuthorityStrategy authorityStrategy) {
         this.authorityStrategy = authorityStrategy;
     }
 
-    public boolean isBase64EncodedSecret() {
+    protected boolean isBase64EncodedSecret() {
         return base64EncodedSecret;
     }
 
-    public void setBase64EncodedSecret(boolean base64EncodedSecret) {
+    protected void setBase64EncodedSecret(boolean base64EncodedSecret) {
         this.base64EncodedSecret = base64EncodedSecret;
     }
 
+    protected Algorithm getSigningAlgorithm() {
+        return signingAlgorithm;
+    }
+
+    protected void setSigningAlgorithm(Algorithm signingAlgorithm) {
+        this.signingAlgorithm = signingAlgorithm;
+    }
+
+    protected String getPublicKeyPath() {
+        return publicKeyPath;
+    }
+
+    protected void setPublicKeyPath(String publicKeyPath) {
+        this.publicKeyPath = publicKeyPath;
+    }
 }
