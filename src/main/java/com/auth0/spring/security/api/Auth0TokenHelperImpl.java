@@ -29,6 +29,8 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
             final HashMap<String, Object> claims = new HashMap<>();
             claims.putAll((Map) object);
             claims.put("exp", expiration);
+            claims.put("iss", "YOUR_ISSUER");
+            claims.put("aud", "YOUR_CLIENT_ID");
             final String token = jwtSigner.sign(claims);
             return token;
         } catch (Exception e) {

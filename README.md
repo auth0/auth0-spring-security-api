@@ -108,6 +108,18 @@ below for further info. The takeaway message is that this property value is a co
 
 `auth0.defaultAuth0ApiSecurityEnabled` - This is a boolean value that switches having the default config enabled. Should be `false`
 
+The default JWT Signing Algorithm is `HS256`. This is HMAC SHA256, a symmetric crypographic algorithm (HMAC), that uses the `clientSecret` to
+verify a signed JWT token. However, if you wish to configure this library to use an alternate cryptographic algorithm then use the two
+options below. The Auth0 Dashboard offers the choice between `HS256` and `RS256`. 'RS256' is RSA SHA256 and uses a public key cryptographic
+algorithm (RSA), that requires knowledge of the application public key to verify a signed JWT Token (that was signed with a private key).
+You can download the application's public key from the Auth0 Dashboard and store it inside your application's WEB-INF directory. 
+
+The following two attributes are required when configuring your application with this library to use `RSA` instead of `HMAC`:
+
+`auth0.signing_algorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
+
+`auth0.public_key_path` - This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory. Should always be set when using `RS256`. 
+
 
 ### Extending Auth0SecurityConfig
 
