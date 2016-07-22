@@ -225,5 +225,5 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 [travis-ci-url]: https://travis-ci.org/auth0/auth0-spring-security
 [mit-badge]: http://img.shields.io/:license-mit-blue.svg?style=flat
 [mit-url]: https://raw.githubusercontent.com/auth0/auth0-java/master/LICENSE
-[maven-badge]: https://img.shields.io/maven-central/v/com.auth0/spring-security-auth0.svg
-[maven-url]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0%22%20AND%20a%3A%22spring-security-auth0%22
+[maven-badge]: https://img.shields.io/maven-central/v/com.auth0/auth0-spring-security-api.svg
+[maven-url]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0%22%20AND%20a%3A%22auth0-spring-security-api%22
