@@ -36,31 +36,31 @@ Get Auth0 Spring Security API via Maven:
 
 ```xml
 <dependency>
-  <groupId>com.auth0</groupId>
-  <artifactId>auth0-spring-security-api</artifactId>
-  <version>0.1.0</version>
+    <groupId>com.auth0</groupId>
+    <artifactId>auth0-spring-security-api</artifactId>
+    <version>0.0.3</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-security-api:0.1.0'
+compile 'com.auth0:auth0-spring-security-api:0.0.3'
 ```
 
 ## Learn how to use it
 
-Perhaps the best way to learn how to use this library is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample)
-and the README for that sample. Information on configuration and extension points is also provided in this README document below together with a link
-to our tutorial on using this library.
-
 [Please read this tutorial](https://auth0.com/docs/quickstart/backend/java-spring-security/) to learn how to use this SDK.
 
+Perhaps the best way to learn how to use this library is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample)
+source code and its README file. 
+
+Information on configuration and extension points is provided below. 
 
 Note: If you are planning to use / are using the [Auth0 Resource Server (API Auth)](https://auth0.com/docs/api-auth/using-the-auth0-dashboard) as part of the
 [API Authentication and Authorization](https://auth0.com/docs/api-auth) flows, then please study the
 [Auth0 Spring Security API Resource Server Sample](https://github.com/auth0-samples/auth0-spring-security-api-resource-server-sample) and the README for that sample.
-Note, the Resource Server sample also depends almost exclusively on this library - and behaves almost identically with the exception of configuraiton related changes.
+The Resource Server sample also depends almost exclusively on this library - and behaves almost identically with the exception of configuration related changes.
 
 ---
 
@@ -81,6 +81,8 @@ auth0.securedRoute:/api/v1/**
 auth0.base64EncodedSecret: true
 auth0.authorityStrategy: ROLES
 auth0.defaultAuth0ApiSecurityEnabled: false
+auth0.signingAlgorithm: HS256
+auth0.publicKeyPath:
 ```
 
 Please take a look at the sample that accompanies this library for an easy seed project to see this working.
@@ -116,9 +118,9 @@ You can download the application's public key from the Auth0 Dashboard and store
 
 The following two attributes are required when configuring your application with this library to use `RSA` instead of `HMAC`:
 
-`auth0.signing_algorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
+`auth0.signingAlgorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
 
-`auth0.public_key_path` - This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory. Should always be set when using `RS256`. 
+`auth0.publicKeyPath` - This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory. Should always be set when using `RS256`. 
 
 
 ### Extending Auth0SecurityConfig
