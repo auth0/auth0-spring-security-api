@@ -120,7 +120,7 @@ The following two attributes are required when configuring your application with
 
 `auth0.signingAlgorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
 
-`auth0.publicKeyPath` - This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory. Should always be set when using `RS256`. 
+`auth0.publicKeyPath` - This is the path location to the public key stored locally on disk / inside your application War file. Should always be set when using `RS256`. 
 
 
 ### Extending Auth0SecurityConfig
