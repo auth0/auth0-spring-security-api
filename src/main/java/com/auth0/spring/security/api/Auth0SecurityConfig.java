@@ -26,7 +26,7 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
  *  Applications are expected to extend this Config
  */
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 @ConditionalOnProperty(prefix = "auth0", name = "defaultAuth0ApiSecurityEnabled")
