@@ -2,6 +2,7 @@ package com.auth0.spring.security.api;
 
 import java.util.Collection;
 
+import com.auth0.spring.security.api.Auth0UserDetails;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
