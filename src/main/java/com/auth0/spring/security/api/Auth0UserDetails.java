@@ -1,12 +1,13 @@
 package com.auth0.spring.security.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.auth0.spring.security.api.authority.AuthorityStrategy;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
 
 /**
  * Implementation of UserDetails in compliance with the decoded object returned by the Auth0 JWT
@@ -15,8 +16,6 @@ public class Auth0UserDetails implements UserDetails {
 
     private static final long serialVersionUID = 2058797193125711681L;
 
-    private static final Logger logger = LoggerFactory.getLogger(Auth0UserDetails.class);
-
     private Map<String, Object> details;
     private String username;
     private boolean emailVerified;
@@ -24,7 +23,7 @@ public class Auth0UserDetails implements UserDetails {
 
 
     @SuppressWarnings("unchecked")
-    public Auth0UserDetails(final Map<String, Object> map, final Auth0AuthorityStrategy authorityStrategy) {
+    public Auth0UserDetails(final Map<String, Object> map, final AuthorityStrategy authorityStrategy) {
         this.details = map;
         if (map.containsKey("email")) {
             this.username = map.get("email").toString();
@@ -41,28 +40,17 @@ public class Auth0UserDetails implements UserDetails {
         setupGrantedAuthorities(map, authorityStrategy);
     }
 
-    private void setupGrantedAuthorities(final Map<String, Object> map, final Auth0AuthorityStrategy authorityStrategy) {
+    private void setupGrantedAuthorities(final Map<String, Object> map, final AuthorityStrategy authorityStrategy) {
         this.authorities = new ArrayList<>();
-        final String authorityStrategyName = authorityStrategy.toString();
-        if (map.containsKey(authorityStrategyName)) {
-            // here, we differentiate between "scope" which is a space delimited string & "roles" and "groups" which are a list
-            try {
-                List<String> authorities = new ArrayList<>();
-                if (Auth0AuthorityStrategy.SCOPE.equals(authorityStrategy)) {
-                    final String authoritiesStr = (String) map.get(authorityStrategyName);
-                    if (authoritiesStr != null) {
-                        authorities = Arrays.asList(authoritiesStr.split("\\s+"));
-                    }
-                } else {
-                    authorities = (ArrayList<String>) map.get(authorityStrategyName);
-                }
-                for (final String authority : authorities) {
+        try {
+            final Collection<String> authorities = authorityStrategy.getAuthorities(map);
+            if (authorities != null) {
+                 for (final String authority : authorities) {
                     this.authorities.add(new SimpleGrantedAuthority(authority));
                 }
-            } catch (ClassCastException e) {
-                e.printStackTrace();
-                logger.error("Error in casting the roles object");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

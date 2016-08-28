@@ -1,6 +1,7 @@
 package com.auth0.spring.security.api;
 
 import com.auth0.jwt.Algorithm;
+import com.auth0.spring.security.api.authority.AuthorityStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -77,20 +78,23 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
         return new Auth0CORSFilter();
     }
 
-    @Bean(name = "auth0AuthenticationProvider")
-    public Auth0AuthenticationProvider auth0AuthenticationProvider() {
-        // First check the authority strategy configured for the API
+    @Bean(name = "authorityStrategy")
+    public AuthorityStrategy authorityStrategy() {
         if (!Auth0AuthorityStrategy.contains(this.authorityStrategy)) {
             throw new IllegalStateException("Configuration error, illegal authority strategy");
         }
-        final Auth0AuthorityStrategy authorityStrategy = Auth0AuthorityStrategy.valueOf(this.authorityStrategy);
+        return Auth0AuthorityStrategy.valueOf(this.authorityStrategy).getStrategy();
+    }
+
+    @Bean(name = "auth0AuthenticationProvider")
+    public Auth0AuthenticationProvider auth0AuthenticationProvider() {
         final Auth0AuthenticationProvider authenticationProvider = new Auth0AuthenticationProvider();
         authenticationProvider.setDomain(domain);
         authenticationProvider.setIssuer(issuer);
         authenticationProvider.setClientId(clientId);
         authenticationProvider.setClientSecret(clientSecret);
         authenticationProvider.setSecuredRoute(securedRoute);
-        authenticationProvider.setAuthorityStrategy(authorityStrategy);
+        authenticationProvider.setAuthorityStrategy(authorityStrategy());
         authenticationProvider.setBase64EncodedSecret(base64EncodedSecret);
         authenticationProvider.setSigningAlgorithm(Algorithm.valueOf(this.signingAlgorithm));
         authenticationProvider.setPublicKeyPath(this.publicKeyPath);
@@ -137,17 +141,13 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-
         // Disable CSRF for JWT usage
         http.csrf().disable();
-
         // Add Auth0 Authentication Filter
         http.addFilterAfter(auth0AuthenticationFilter(auth0AuthenticationEntryPoint()), SecurityContextPersistenceFilter.class)
                 .addFilterBefore(simpleCORSFilter(), Auth0AuthenticationFilter.class);
-
         // Apply the Authentication and Authorization Strategies your application endpoints require
         authorizeRequests(http);
-
         // STATELESS - we want re-authentication of JWT token on every request
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }

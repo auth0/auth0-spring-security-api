@@ -1,25 +1,35 @@
 package com.auth0.spring.security.api;
 
+
+import com.auth0.spring.security.api.authority.AuthorityStrategy;
+import com.auth0.spring.security.api.authority.ListAttributeStrategy;
+import com.auth0.spring.security.api.authority.StringAttributeStrategy;
+
 /**
  * The authority strategy being used
  *
- * Would expect three possible types of strategy pertaining to "Role" info:
+ * Three possible types of strategy pertaining to "Role" info are built in:
  * Groups, Roles, and Scope
  *
  * For API Resource Server using JWT Tokens - `scope` is the default
- * Configurable via auth0.properties file
  *
  */
 public enum Auth0AuthorityStrategy {
 
-    GROUPS("groups"),
-    ROLES("roles"),
-    SCOPE("scope");
+    GROUPS("groups", new ListAttributeStrategy("groups")),
+    ROLES("roles", new ListAttributeStrategy("roles")),
+    SCOPE("scope", new StringAttributeStrategy("scope"));
 
     private final String name;
+    private final AuthorityStrategy strategy;
 
-    private Auth0AuthorityStrategy(final String name) {
+    Auth0AuthorityStrategy(final String name, final AuthorityStrategy strategy) {
         this.name = name;
+        this.strategy = strategy;
+    }
+
+    public AuthorityStrategy getStrategy() {
+      return this.strategy;
     }
 
     @Override
@@ -28,7 +38,7 @@ public enum Auth0AuthorityStrategy {
     }
 
     public static boolean contains(String value) {
-        for (final Auth0AuthorityStrategy authorityStrategy : Auth0AuthorityStrategy.values()) {
+        for (final Auth0AuthorityStrategy authorityStrategy : values()) {
             if (authorityStrategy.name().equals(value)) {
                 return true;
             }
