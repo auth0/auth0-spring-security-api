@@ -1,197 +1,97 @@
-# Auth0 Spring Security Api
+# Auth0 Spring Security for API
 
 [![Build][travis-ci-badge]][travis-ci-url]
 [![MIT][mit-badge]][mit-url]
 [![Maven][maven-badge]][maven-url]
 
-A modern Java Spring library that allows you to use Auth0 with Spring Security. Leverages Spring Boot dependencies.
-Validates the JWT from Auth0 in every API call to assert authentication according to configuration.
-
-This library is suitable for headless APIs and SPA (single page application) backend end server scenarios.
-
-This library provides you your application with easy access to able to:
-
- 1. Configure and run Java based Spring API server with Auth0 and Spring Security
- 2. Use 100% Java Configuration (Annotations)
- 3. Secure one or more URL endpoints with Role / Authority based permissions (ROLE_USER, ROLE_ADMIN etc)
- 4. Secure Java Services using method level security annotations for role based access control
-
-If you are planning to use this in conjunction with a Single Page Application (SPA), then there are a couple of different
-architectures you might consider:
-
-1). You could either co-locate the SPA inside the same Spring Boot app from which you use this library
-(drop your SPA code under /src/main/resources as you would for any Spring Boot application - and then the
-SPA talks directly to its web-server (Spring Boot) using JWT authorization on all requests to secured endpoints
-as defined by your AppConfig ( just augment here ).
-
-2). You could have a separate server process that acts as the web-server for your SPA app (Node.js / Express.js is a
-popular choice here - doesn't have to be Java), and then use the Auth0 / Java Spring Boot API running as a
-separate web server to expose API endpoints as required for server-side functions of our SPA application.
-This is a popular architecture style, and Cross Origin support is baked into the API config for that purpose.
-
 
 ## Download
 
-Get Auth0 Spring Security API via Maven:
+Get Auth0 Spring Security API via [JitPack](https://jitpack.io):
 
 ```xml
 <dependency>
-    <groupId>com.auth0</groupId>
+    <groupId>com.github.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
-    <version>0.0.3</version>
+    <version>v1-SNAPSHOT</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-security-api:0.0.3'
+compile 'com.auth0.github:auth0-spring-security-api:v1-SNAPSHOT'
 ```
 
-## Learn how to use it
+> Remember to add JitPack repositories
 
-[Please read this tutorial](https://auth0.com/docs/quickstart/backend/java-spring-security/) to learn how to use this SDK.
+## Usage
 
-Perhaps the best way to learn how to use this library is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample)
-source code and its README file. 
+Inside a `WebSecurityConfigurerAdapter` you can configure your api to only accept `RS256` signed JWTs 
 
-Information on configuration and extension points is provided below. 
-
-Note: If you are planning to use / are using the [Auth0 Resource Server (API Auth)](https://auth0.com/docs/api-auth/using-the-auth0-dashboard) as part of the
-[API Authentication and Authorization](https://auth0.com/docs/api-auth) flows, then please study the
-[Auth0 Spring Security API Resource Server Sample](https://github.com/auth0-samples/auth0-spring-security-api-resource-server-sample) and the README for that sample.
-The Resource Server sample also depends almost exclusively on this library - and behaves almost identically with the exception of configuration related changes.
-
----
-
-## Default Configuration
-
-Here is a listing of each of the configuration options and their meaing. If you are writing your Client application
-using `Spring Boot` for example, this is as simple as dropping the following file (`auth0.properties`) into the `src/main/resources`
-directory alongside `application.properties`.
-
-Here is an example of a populated `auth0.properties` file:
-
-```
-auth0.domain:arcseldon.auth0.com
-auth0.issuer: https://arcseldon.auth0.com/
-auth0.clientId: eTQbNn3qxypLq2Lc1qQEThYL6R7M7MDh
-auth0.clientSecret: Z3xxxxxxCB6ZMaJLOcoS94xxxxbyzGWlTvwR44fkxxxxxMCbiVtgBFFA
-auth0.securedRoute:/api/v1/**
-auth0.base64EncodedSecret: true
-auth0.authorityStrategy: ROLES
-auth0.defaultAuth0ApiSecurityEnabled: false
-auth0.signingAlgorithm: HS256
-auth0.publicKeyPath:
-```
-
-Please take a look at the sample that accompanies this library for an easy seed project to see this working.
-
-Here is a breakdown of what each attribute means:
-
-`auth0.domain` - This is your auth0 domain (tenant you have created when registering with auth0 - account name)
-
-`auth0.issuer` - This is the issuer of the JWT Token (typically full URL of your auth0 tenant account - eg. https://{tenant_name}.auth0.com/)
-
-`auth0.clientId` - This is the client id of your auth0 application (see Settings page on auth0 dashboard)
-
-`auth0.clientSecret` - This is the client secret of your auth0 application (see Settings page on auth0 dashboard)
-
-`auth0.securedRoute`: - This is the URL pattern to secure a URL endpoint. Should start with `/` Note, if you are using the default library configuration (not overriding with
-your own) which just secures a single, specific context path then this value is important. However, if you are building an application which may have several different
-secured endpoints, or you don't want / need to specify an explicit configuration value in this .properties file then just set the value to something that signifies this.
-Perhaps `auth0.securedRoute: UNUSED`. Then just ignore the `securedRoute` entirely when you specify your own configuration. See the section `Extending Auth0SecurityConfig`
-below for further info. The takeaway message is that this property value is a convenience for the developer to configure an endpoint by context path
-(.eg all URLS with `/api/v1/` in their context path) - but there is no obligation to actually reference this property in your own HttpSecurity configuration.
-
-`auth0.base64EncodedSecret` - This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `true`
-
-`auth0.authorityStrategy` - This indicates whether authorization `claims` against the Principal shall be `GROUPS`, `ROLES` or `SCOPE` based. Default is `ROLES`
-
-`auth0.defaultAuth0ApiSecurityEnabled` - This is a boolean value that switches having the default config enabled. Should be `false`
-
-The default JWT Signing Algorithm is `HS256`. This is HMAC SHA256, a symmetric crypographic algorithm (HMAC), that uses the `clientSecret` to
-verify a signed JWT token. However, if you wish to configure this library to use an alternate cryptographic algorithm then use the two
-options below. The Auth0 Dashboard offers the choice between `HS256` and `RS256`. 'RS256' is RSA SHA256 and uses a public key cryptographic
-algorithm (RSA), that requires knowledge of the application public key to verify a signed JWT Token (that was signed with a private key).
-You can download the application's public key from the Auth0 Dashboard and store it inside your application's WEB-INF directory. 
-
-The following two attributes are required when configuring your application with this library to use `RSA` instead of `HMAC`:
-
-`auth0.signingAlgorithm` - This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`. 
-
-`auth0.publicKeyPath` - This is the path location to the public key stored locally on disk / inside your application War file. Should always be set when using `RS256`. 
-
-
-### Extending Auth0SecurityConfig
-
-Contained in this library is a security configuration class (using Spring Java Configuration Annotations) called `Auth0SecurityConfig`.
-It handles all the library Application Context wiring configuration, and a default `HttpSecurity` endpoint configuration that by default
-simply secures the URL Context path defined with `auth0.securedRoute` property (see properties configuration instructions above).
-
-This is defined in a method called `authorizeRequests(final HttpSecurity http)` - which is intentionally meant for being overridden.
-In almost all cases, it is expected that Client Applications using this library will do so.
-
-```
-/**
-     * Lightweight default configuration that offers basic authorization checks for authenticated
-     * users on secured endpoint, and sets up a Principal user object with granted authorities
-     * <p>
-     * For simple apps, this is sufficient, however for applications wishing to specify fine-grained
-     * endpoint access restrictions, use Role / Group level endpoint authorization etc, then this configuration
-     * should be disabled and a copy, augmented with your own requirements provided. See Sample app for example
-     *
-     * Override this function in subclass to apply custom authentication / authorization
-     * strategies to your application endpoints
-     */
-    protected void authorizeRequests(final HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(securedRoute).authenticated()
-                .antMatchers("/**").permitAll();
-    }
- ```
-
-For example, from the Sample application here is the declared subclass together with overridden method:
-
-```
-package com.auth0.example;
-
-import com.auth0.spring.security.api.Auth0SecurityConfig;
-import org.springframework.boot.autoconfigure.security.SecurityProperties;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-
+```java
+@EnableWebSecurity
 @Configuration
-@EnableWebSecurity(debug = true)
-@EnableGlobalMethodSecurity(prePostEnabled = true)
-@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
-public class AppConfig extends Auth0SecurityConfig {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
-    protected void authorizeRequests(final HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/ping").permitAll()
-                .antMatchers(HttpMethod.GET, "/api/v1/profiles").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.GET, "/api/v1/profiles/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-                .antMatchers(HttpMethod.POST, "/api/v1/profiles/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.PUT, "/api/v1/profiles/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(HttpMethod.DELETE, "/api/v1/profiles/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(securedRoute).authenticated();
+    protected void configure(HttpSecurity http) throws Exception {
+        JwtWebSecurityConfigurer
+                .forRS256("YOUR_API_AUDIENCE", "YOUR_API_ISSUER")
+                .configure(http);
     }
-
 }
 ```
 
-By subclassing, and overriding `authorizeRequests` as above, you are free to define whatever endpoint security configuration (authentication and
-authorization) suitable for your own needs.
+or for `HS256` signed JWTs
 
-----
+```java
+@EnableWebSecurity
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        JwtWebSecurityConfigurer
+                .forHS256WithBase64Secret("YOUR_API_AUDIENCE", "YOUR_API_ISSUER", "YOUR_BASE_64_ENCODED_SECRET")
+                .configure(http);
+    }
+}
+```
+
+
+Then using Spring Security `HttpSecurity` you can specify which paths requires authentication
+
+```java
+    http.authorizeRequests()
+        .antMatchers("/api/**").fullyAuthenticated();
+```
+
+and you can even specify that the JWT should have a single or several scopes
+
+```java
+    http.authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+```
+
+
+`JwtWebSecurityConfigurer#configure(HttpSecurity)` also returns `HttpSecurity` so you can do the following:
+
+```java
+@EnableWebSecurity
+@Configuration
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        JwtWebSecurityConfigurer
+                .forRS256("YOUR_API_AUDIENCE", "YOUR_API_ISSUER")
+                .configure(http)
+                .authorizeRequests()
+                        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+    }
+}
+```
 
 ## What is Auth0?
 
