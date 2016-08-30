@@ -22,12 +22,12 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private static Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
-    private final String secret;
+    private final byte[] secret;
     private final String issuer;
     private final String audience;
     private final JwkProvider jwkProvider;
 
-    public JwtAuthenticationProvider(String secret, String issuer, String audience) {
+    public JwtAuthenticationProvider(byte[] secret, String issuer, String audience) {
         this.secret = secret;
         this.issuer = issuer;
         this.audience = audience;
@@ -92,7 +92,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         return new JWTVerifier(key, audience, issuer);
     }
 
-    private static JWTVerifier providerForHS256(String secret, String issuer, String audience) {
+    private static JWTVerifier providerForHS256(byte[] secret, String issuer, String audience) {
         return new JWTVerifier(secret, audience, issuer);
     }
 }
