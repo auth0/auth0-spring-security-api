@@ -4,8 +4,8 @@ import com.auth0.Auth0Exception;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
-import com.auth0.jwt.internal.org.apache.commons.codec.binary.Base64;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
