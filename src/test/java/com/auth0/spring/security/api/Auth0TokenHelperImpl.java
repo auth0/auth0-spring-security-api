@@ -4,8 +4,8 @@ import com.auth0.Auth0Exception;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
-import com.auth0.jwt.internal.org.apache.commons.codec.binary.Base64;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
@@ -40,7 +40,7 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
 
     @Override
     public Object decodeToken(final String token) {
-        final JWTVerifier jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId);
+        final JWTVerifier jwtVerifier = new JWTVerifier(Base64.decodeBase64(clientSecret), clientId);
         try {
             final Map<String, Object> verify = jwtVerifier.verify(token);
             final String payload = (String) verify.get("$");

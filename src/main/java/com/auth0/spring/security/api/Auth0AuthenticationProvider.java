@@ -3,9 +3,9 @@ package com.auth0.spring.security.api;
 import com.auth0.jwt.Algorithm;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
-import com.auth0.jwt.internal.org.apache.commons.codec.binary.Base64;
-import com.auth0.jwt.internal.org.apache.commons.lang3.Validate;
 import com.auth0.spring.security.api.authority.AuthorityStrategy;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.Validate;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -82,7 +82,8 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider, Init
             case HS512:
                 // Auth0 Client Secrets are currently Base64 encoded, Resource Server Signing Secret is NOT Base64 encoded
                 if (base64EncodedSecret) {
-                    jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId, issuer);
+                    new Base64(true);
+                    jwtVerifier = new JWTVerifier(Base64.decodeBase64(clientSecret), clientId, issuer);
                 } else {
                     jwtVerifier = new JWTVerifier(clientSecret, clientId, issuer);
                 }
