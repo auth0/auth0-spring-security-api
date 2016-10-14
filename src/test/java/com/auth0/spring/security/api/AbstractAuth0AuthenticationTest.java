@@ -3,7 +3,7 @@ package com.auth0.spring.security.api;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -18,7 +18,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = { TestAuth0Configuration.class, Auth0SecurityConfig.class})
+@SpringBootTest(classes = {TestAuth0Configuration.class, Auth0SecurityConfig.class})
 @WebAppConfiguration
 public abstract class AbstractAuth0AuthenticationTest {
 
