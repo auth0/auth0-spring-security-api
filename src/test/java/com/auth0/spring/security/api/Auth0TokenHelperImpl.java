@@ -40,7 +40,7 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
 
     @Override
     public Object decodeToken(final String token) {
-        final JWTVerifier jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId);
+        final JWTVerifier jwtVerifier = new JWTVerifier(Base64.decodeBase64(clientSecret), clientId);
         try {
             final Map<String, Object> verify = jwtVerifier.verify(token);
             final String payload = (String) verify.get("$");

@@ -82,7 +82,8 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider, Init
             case HS512:
                 // Auth0 Client Secrets are currently Base64 encoded, Resource Server Signing Secret is NOT Base64 encoded
                 if (base64EncodedSecret) {
-                    jwtVerifier = new JWTVerifier(new Base64(true).decodeBase64(clientSecret), clientId, issuer);
+                    new Base64(true);
+                    jwtVerifier = new JWTVerifier(Base64.decodeBase64(clientSecret), clientId, issuer);
                 } else {
                     jwtVerifier = new JWTVerifier(clientSecret, clientId, issuer);
                 }
