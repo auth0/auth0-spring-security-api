@@ -6,13 +6,11 @@ import com.auth0.spring.security.api.authority.ListAttributeStrategy;
 import com.auth0.spring.security.api.authority.StringAttributeStrategy;
 
 /**
- * The authority strategy being used
+ * The authority strategy being used - can be either ROLES, GROUPS, or SCOPE
  *
- * Three possible types of strategy pertaining to "Role" info are built in:
- * Groups, Roles, and Scope
- *
- * For API Resource Server using JWT Tokens - `scope` is the default
- *
+ * For API Resource Server using JWT Access Tokens - `scope` is the default.
+ * This is a claim added to the JWT Access token whose values are the scope
+ * values representing the permissions granted.
  */
 public enum Auth0AuthorityStrategy {
 
@@ -37,7 +35,12 @@ public enum Auth0AuthorityStrategy {
         return this.name;
     }
 
-    public static boolean contains(String value) {
+    /**
+     * Indicates whether this Authority Strategy contains the value supplied
+     * @param value the value to check
+     * @return boolean indicating whether found
+     */
+    public static boolean contains(final String value) {
         for (final Auth0AuthorityStrategy authorityStrategy : values()) {
             if (authorityStrategy.name().equals(value)) {
                 return true;

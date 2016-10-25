@@ -6,6 +6,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * Default CORSFilter configuration
+ */
 @Component
 public class Auth0CORSFilter implements Filter {
 

@@ -6,8 +6,8 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 
 /**
- * Implements the org.springframework.security.core.Authentication interface.
- * The constructor is set with the Auth0 JWT
+ * Implementation of the org.springframework.security.core.Authentication interface.
+ * Spring Security Container for Principal (user profile) and JWT
  */
 public class Auth0JWTToken extends AbstractAuthenticationToken {
 
@@ -16,7 +16,7 @@ public class Auth0JWTToken extends AbstractAuthenticationToken {
 	private final String jwt;
 	private Auth0UserDetails principal;
 
-	public Auth0JWTToken(String jwt) {
+	public Auth0JWTToken(final String jwt) {
 		super(null);
 		this.jwt = jwt;
 		setAuthenticated(false);

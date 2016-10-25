@@ -22,9 +22,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 
 /**
- *  Auth0 Security Config that wires together dependencies required
+ * Holds the default configuration for the library
+ * Applications are expected to extend this configuration on as-needed basis
  *
- *  Applications are expected to extend this Config
+ * Extend this configuration in your own subclass and override specific functions to apply your own
+ * behaviour as required eg. to apply custom authentication / authorization strategies to your application endpoints
  */
 @Configuration
 @EnableWebSecurity
@@ -33,35 +35,61 @@ import org.springframework.security.web.context.SecurityContextPersistenceFilter
 @ConditionalOnProperty(prefix = "auth0", name = "defaultAuth0ApiSecurityEnabled")
 public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * This is your auth0 domain (tenant you have created when registering with auth0 - account name)
+     */
     @Value(value = "${auth0.domain}")
     protected String domain;
 
+    /**
+     * This is the issuer of the JWT Token (typically full URL of your auth0 tenant account
+     * eg. https://{tenant_name}.auth0.com/
+     */
     @Value(value = "${auth0.issuer}")
     protected String issuer;
 
+    /**
+     * This is the client id of your auth0 application (see Settings page on auth0 dashboard)
+     */
     @Value(value = "${auth0.clientId}")
     protected String clientId;
 
+    /**
+     * This is the client secret of your auth0 application (see Settings page on auth0 dashboard)
+     */
     @Value(value = "${auth0.clientSecret}")
     protected String clientSecret;
 
+    /**
+     * This is the URL pattern to secure a URL endpoint. Should start with `/`
+     */
     @Value(value = "${auth0.securedRoute}")
     protected String securedRoute;
 
+    /**
+     * The authority strategy being used - can be either ROLES, GROUPS or SCOPE
+     * whose values are the scope values representing the permissions granted.
+     * For the Auth0 Resource Server API - the default is SCOPE
+     */
     @Value(value = "${auth0.authorityStrategy}")
     protected String authorityStrategy;
 
+    /**
+     * This is a boolean value indicating whether the Secret used to verify the JWT is base64 encoded. Default is `true`
+     */
     @Value(value = "${auth0.base64EncodedSecret}")
     protected boolean base64EncodedSecret;
 
     /**
-     * default to HS256 for backwards compatibility
+     * This is signing algorithm to verify signed JWT token. Use `HS256` or `RS256`.
+     * Default to HS256 for backwards compatibility
      */
     @Value(value = "${auth0.signingAlgorithm:HS256}")
     protected String signingAlgorithm;
 
     /**
-     * default to empty string as HS256 is default
+     * This is the path location to the public key stored locally on disk / inside your application War file WEB-INF directory.
+     * Should always be set when using `RS256`.
      */
     @Value(value = "${auth0.publicKeyPath:}")
     protected String publicKeyPath;
@@ -73,11 +101,17 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    /**
+     * Factory for CORSFilter
+     */
     @Bean
     public Auth0CORSFilter simpleCORSFilter() {
         return new Auth0CORSFilter();
     }
 
+    /**
+     * Factory for AuthorityStrategy
+     */
     @Bean(name = "authorityStrategy")
     public AuthorityStrategy authorityStrategy() {
         if (!Auth0AuthorityStrategy.contains(this.authorityStrategy)) {
@@ -86,6 +120,9 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
         return Auth0AuthorityStrategy.valueOf(this.authorityStrategy).getStrategy();
     }
 
+    /**
+     * Factory for AuthenticationProvider
+     */
     @Bean(name = "auth0AuthenticationProvider")
     public Auth0AuthenticationProvider auth0AuthenticationProvider() {
         final Auth0AuthenticationProvider authenticationProvider = new Auth0AuthenticationProvider();
@@ -101,11 +138,17 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 
+    /**
+     * Factory for Auth0AuthenticationEntryPoint
+     */
     @Bean(name = "auth0EntryPoint")
     public Auth0AuthenticationEntryPoint auth0AuthenticationEntryPoint() {
         return new Auth0AuthenticationEntryPoint();
     }
 
+    /**
+     * Factory for Auth0AuthenticationFilter
+     */
     @Bean(name = "auth0Filter")
     public Auth0AuthenticationFilter auth0AuthenticationFilter(final Auth0AuthenticationEntryPoint entryPoint) {
         final Auth0AuthenticationFilter filter = new Auth0AuthenticationFilter();
@@ -135,10 +178,13 @@ public class Auth0SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
+    public void configure(final WebSecurity web) throws Exception {
         web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
     }
 
+    /**
+     * Http Security Configuration
+     */
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         // Disable CSRF for JWT usage

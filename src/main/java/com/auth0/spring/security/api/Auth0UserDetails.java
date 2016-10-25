@@ -29,6 +29,8 @@ public class Auth0UserDetails implements UserDetails {
             this.username = map.get("email").toString();
         } else if (map.containsKey("username")) {
             this.username = map.get("username").toString();
+        } else if (map.containsKey("nickname")) {
+            this.username = map.get("nickname").toString();
         } else if (map.containsKey("user_id")) {
             this.username = map.get("user_id").toString();
         } else {
@@ -62,7 +64,7 @@ public class Auth0UserDetails implements UserDetails {
      * Will return UnsupportedOperationException
      */
     public String getPassword() {
-        throw new UnsupportedOperationException("Password is protected");
+        return null;
     }
 
     /**
@@ -72,21 +74,51 @@ public class Auth0UserDetails implements UserDetails {
         return username;
     }
 
+    /**
+     * Indicates whether the user's account has expired. An expired account cannot be
+     * authenticated.
+     * <p>
+     * This implementation shall return true by default
+     *
+     * @return <code>true</code> if the user's account is valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
     public boolean isAccountNonExpired() {
-        return false;
+        return true;
     }
 
+    /**
+     * Indicates whether the user is locked or unlocked. A locked user cannot be
+     * authenticated.
+     * <p>
+     * This implementation shall return true by default
+     *
+     * @return <code>true</code> if the user is not locked, <code>false</code> otherwise
+     */
+    @Override
     public boolean isAccountNonLocked() {
-        return false;
+        return true;
     }
 
+    /**
+     * Indicates whether the user's credentials (password) has expired. Expired
+     * credentials prevent authentication.
+     * <p>
+     * This implementation shall return true by default
+     *
+     * @return <code>true</code> if the user's credentials are valid (ie non-expired),
+     * <code>false</code> if no longer valid (ie expired)
+     */
+    @Override
     public boolean isCredentialsNonExpired() {
-        return false;
+        return true;
     }
 
     /**
      * Will return true if the email is verified, otherwise it will return false
      */
+    @Override
     public boolean isEnabled() {
         return emailVerified;
     }

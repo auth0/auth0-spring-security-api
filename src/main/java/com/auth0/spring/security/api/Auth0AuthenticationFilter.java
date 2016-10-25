@@ -18,7 +18,8 @@ import java.io.IOException;
 import java.util.regex.Pattern;
 
 /**
- * Filter responsible to intercept the JWT in the HTTP header and attempt an authentication. It delegates the authentication to the authentication manager
+ * Filter responsible to intercept the JWT in the HTTP header and attempt an authentication.
+ * It delegates the authentication to the authentication manager
  */
 public class Auth0AuthenticationFilter extends GenericFilterBean {
 
@@ -27,6 +28,10 @@ public class Auth0AuthenticationFilter extends GenericFilterBean {
 
     private AuthenticationEntryPoint entryPoint;
 
+    /**
+     * Perform filter check on this request - verify tokens exist and verify
+     * the token is valid
+     */
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) req;
         final HttpServletResponse response = (HttpServletResponse) res;
@@ -51,7 +56,7 @@ public class Auth0AuthenticationFilter extends GenericFilterBean {
     }
 
     /**
-     * Looks at the authorization bearer and extracts the JWT
+     * Looks at the authorization bearer http header and extracts the JWT
      */
     protected String getToken(HttpServletRequest httpRequest) {
         final String authorizationHeader = httpRequest.getHeader("authorization");
