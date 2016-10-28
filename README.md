@@ -38,14 +38,14 @@ Get Auth0 Spring Security API via Maven:
 <dependency>
     <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
-    <version>0.3.1</version>
+    <version>0.3.2</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0:auth0-spring-security-api:0.3.1'
+compile 'com.auth0:auth0-spring-security-api:0.3.2'
 ```
 
 ## Learn how to use it
