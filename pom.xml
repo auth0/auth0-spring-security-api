@@ -28,6 +28,13 @@
         <connection>scm:git:git@github.com:auth0/auth0-spring-security-api.git</connection>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencies>
 
         <dependency>
@@ -46,9 +53,9 @@
             <version>${commons.codec.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>jwks-rsa</artifactId>
-            <version>0.1.0</version>
+            <groupId>com.github.auth0</groupId>
+            <artifactId>jwks-rsa-java</artifactId>
+            <version>master-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>

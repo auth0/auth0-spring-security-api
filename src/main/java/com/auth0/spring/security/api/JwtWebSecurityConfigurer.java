@@ -7,6 +7,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
+import java.util.concurrent.TimeUnit;
+
 public abstract class JwtWebSecurityConfigurer {
 
     protected final String audience;
@@ -21,6 +23,10 @@ public abstract class JwtWebSecurityConfigurer {
 
     public static JwtWebSecurityConfigurer forRS256(String audience, String issuer) {
         return new RSConfigurer(audience, issuer);
+    }
+
+    public static JwtWebSecurityConfigurer forRS256WithCustomRateLimit(String audience, String issuer, long bucketSize, long refillRate, TimeUnit unit) {
+        return new RSConfigurer(audience, issuer, bucketSize, refillRate, unit);
     }
 
     public static JwtWebSecurityConfigurer forHS256WithBase64Secret(String audience, String issuer, String secret) {
@@ -60,13 +66,21 @@ public abstract class JwtWebSecurityConfigurer {
     }
 
     private static class RSConfigurer extends JwtWebSecurityConfigurer {
+        private final JwkProviderBuilder builder;
+
         private RSConfigurer(String audience, String issuer) {
             super(audience, issuer);
+            builder = new JwkProviderBuilder(this.issuer);
+        }
+
+        private RSConfigurer(String audience, String issuer, long bucketSize, long refillRate, TimeUnit unit) {
+            super(audience, issuer);
+            builder = new JwkProviderBuilder(this.issuer).rateLimited(bucketSize, refillRate, unit);
         }
 
         @Override
         public AuthenticationProvider newAuthenticationProvider() {
-            final JwkProvider jwkProvider = new JwkProviderBuilder().forDomain(this.issuer).build();
+            final JwkProvider jwkProvider = builder.build();
             return new JwtAuthenticationProvider(jwkProvider, this.issuer, this.audience);
         }
     }

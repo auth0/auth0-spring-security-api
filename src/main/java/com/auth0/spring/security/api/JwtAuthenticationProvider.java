@@ -31,7 +31,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         this.secret = secret;
         this.issuer = issuer;
         this.audience = audience;
-        this.jwkProvider= null;
+        this.jwkProvider = null;
     }
 
     public JwtAuthenticationProvider(JwkProvider jwkProvider, String issuer, String audience) {
@@ -60,7 +60,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
             final JwtAuthentication jwtAuth = new JwtAuthentication(token, decoded);
             logger.info("Authenticated with jwt with scopes {}", jwtAuth.getAuthorities());
             return jwtAuth;
-        } catch (NoSuchAlgorithmException |InvalidKeyException |IOException |SignatureException |JWTVerifyException e) {
+        } catch (NoSuchAlgorithmException | InvalidKeyException | IOException | SignatureException | JWTVerifyException e) {
             throw new BadCredentialsException("Not a valid token", e);
         }
     }
