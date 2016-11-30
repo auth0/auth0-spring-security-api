@@ -1,68 +1,49 @@
 package com.auth0.spring.security.api;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.codec.binary.Base64;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class JwtAuthentication implements Authentication {
 
-    private final String token;
-    private final Map<String, Object> decoded;
+    private final JWT decoded;
     private boolean authenticated;
 
-    public JwtAuthentication(String token) {
-        this.token = token;
+    public JwtAuthentication(String token) throws JWTDecodeException {
+        this.decoded = JWT.decode(token);
         this.authenticated = false;
-        this.decoded = new HashMap<>();
     }
 
-    public JwtAuthentication(String token, Map<String, Object> decoded) {
-        this.token = token;
+    public JwtAuthentication(String token, JWTVerifier verifier) throws JWTVerificationException {
+        this.decoded = verifier.verify(token);
         this.authenticated = true;
-        this.decoded = new HashMap<>(decoded);
-
     }
 
     public String getToken() {
-        return token;
+        return decoded.getToken();
     }
 
     public String getKeyId() {
-        final String[] parts = getToken().split("\\.");
-        if (parts.length != 3) {
-            return null;
-        }
-
-        String json = new String(Base64.decodeBase64(parts[0]));
-        final JsonFactory factory = new JsonFactory();
-        try {
-            final JsonParser parser = factory.createParser(json);
-            final TypeReference<Map<String, Object>> typeReference = new TypeReference<Map<String, Object>>() {
-            };
-            Map<String, Object> values = new ObjectMapper().reader().readValue(parser, typeReference);
-            return (String) values.get("kid");
-        } catch (IOException e) {
-            return null;
-        }
+        return decoded.getClaim("kid").asString();
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String scope = (String) decoded.get("scope");
+        String scope = decoded.getClaim("scope").asString();
         if (scope == null || scope.trim().isEmpty()) {
             return new ArrayList<>();
         }
         final String[] scopes = scope.split(" ");
         List<SimpleGrantedAuthority> authorities = new ArrayList<>(scopes.length);
-        for (String value: scopes) {
+        for (String value : scopes) {
             authorities.add(new SimpleGrantedAuthority(value));
         }
         return authorities;
@@ -70,17 +51,17 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public Object getCredentials() {
-        return token;
+        return decoded.getToken();
     }
 
     @Override
     public Object getDetails() {
-        return new HashMap<>(decoded);
+        return decoded;
     }
 
     @Override
     public Object getPrincipal() {
-        return decoded.get("sub");
+        return decoded.getSubject();
     }
 
     @Override
@@ -98,6 +79,6 @@ public class JwtAuthentication implements Authentication {
 
     @Override
     public String getName() {
-        return (String) decoded.get("sub");
+        return decoded.getSubject();
     }
 }

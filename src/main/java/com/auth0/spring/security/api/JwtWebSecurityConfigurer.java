@@ -61,7 +61,7 @@ public abstract class JwtWebSecurityConfigurer {
 
         @Override
         public AuthenticationProvider newAuthenticationProvider() {
-            return new JwtAuthenticationProvider(secret, issuer, audience);
+            return new JwtAuthenticationProvider(this.secret, this.issuer, this.audience);
         }
     }
 
@@ -70,12 +70,12 @@ public abstract class JwtWebSecurityConfigurer {
 
         private RSConfigurer(String audience, String issuer) {
             super(audience, issuer);
-            builder = new JwkProviderBuilder(this.issuer);
+            builder = new JwkProviderBuilder(issuer);
         }
 
         private RSConfigurer(String audience, String issuer, long bucketSize, long refillRate, TimeUnit unit) {
             super(audience, issuer);
-            builder = new JwkProviderBuilder(this.issuer).rateLimited(bucketSize, refillRate, unit);
+            builder = new JwkProviderBuilder(issuer).rateLimited(bucketSize, refillRate, unit);
         }
 
         @Override

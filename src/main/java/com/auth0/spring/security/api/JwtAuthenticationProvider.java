@@ -1,8 +1,10 @@
 package com.auth0.spring.security.api;
 
 import com.auth0.jwk.*;
+import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.JWTVerifyException;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -11,12 +13,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.security.SignatureException;
-import java.util.Map;
+import java.security.interfaces.RSAPublicKey;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -54,13 +51,10 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         JwtAuthentication jwt = (JwtAuthentication) authentication;
         try {
-            final String token = jwt.getToken();
-            final JWTVerifier verifier = jwtVerifier(jwt);
-            final Map<String, Object> decoded = verifier.verify(token);
-            final JwtAuthentication jwtAuth = new JwtAuthentication(token, decoded);
+            final JwtAuthentication jwtAuth = new JwtAuthentication(jwt.getToken(), jwtVerifier(jwt));
             logger.info("Authenticated with jwt with scopes {}", jwtAuth.getAuthorities());
             return jwtAuth;
-        } catch (NoSuchAlgorithmException | InvalidKeyException | IOException | SignatureException | JWTVerifyException e) {
+        } catch (JWTVerificationException e) {
             throw new BadCredentialsException("Not a valid token", e);
         }
     }
@@ -78,7 +72,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
         try {
             final Jwk jwk = jwkProvider.get(kid);
-            return providerForRS256(jwk.getPublicKey(), issuer, audience);
+            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience);
         } catch (SigningKeyNotFoundException e) {
             throw new AuthenticationServiceException("Could not retrieve jwks from issuer", e);
         } catch (InvalidPublicKeyException e) {
@@ -88,11 +82,17 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    private static JWTVerifier providerForRS256(PublicKey key, String issuer, String audience) {
-        return new JWTVerifier(key, audience, issuer);
+    private static JWTVerifier providerForRS256(RSAPublicKey key, String issuer, String audience) {
+        return JWT.require(Algorithm.RSA256(key))
+                .withIssuer(issuer)
+                .withAudience(audience)
+                .build();
     }
 
     private static JWTVerifier providerForHS256(byte[] secret, String issuer, String audience) {
-        return new JWTVerifier(secret, audience, issuer);
+        return JWT.require(Algorithm.HMAC256(secret))
+                .withIssuer(issuer)
+                .withAudience(audience)
+                .build();
     }
 }
