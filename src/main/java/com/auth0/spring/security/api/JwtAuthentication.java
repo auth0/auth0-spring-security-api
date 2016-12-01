@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,17 +15,16 @@ import java.util.List;
 
 public class JwtAuthentication implements Authentication {
 
-    private final JWT decoded;
+    private final DecodedJWT decoded;
     private boolean authenticated;
 
     public JwtAuthentication(String token) throws JWTDecodeException {
-        this.decoded = JWT.decode(token);
-        this.authenticated = false;
+        this(token, null);
     }
 
     public JwtAuthentication(String token, JWTVerifier verifier) throws JWTVerificationException {
-        this.decoded = verifier.verify(token);
-        this.authenticated = true;
+        this.decoded = verifier == null ? JWT.decode(token) : verifier.verify(token);
+        this.authenticated = verifier != null;
     }
 
     public String getToken() {
