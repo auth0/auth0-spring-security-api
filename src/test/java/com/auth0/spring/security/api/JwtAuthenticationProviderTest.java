@@ -17,6 +17,8 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAKey;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
@@ -155,10 +157,11 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair1.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("audience")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair2.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -178,9 +181,10 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -200,9 +204,10 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("audience")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -243,10 +248,11 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("audience")
                 .withIssuer("some")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -266,10 +272,11 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("some")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -289,10 +296,11 @@ public class JwtAuthenticationProviderTest {
         KeyPair keyPair = RSAKeyPair();
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("audience")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -302,7 +310,6 @@ public class JwtAuthenticationProviderTest {
         provider.authenticate(authentication);
     }
 
-
     @SuppressWarnings("unchecked")
     @Test
     public void shouldFailToAuthenticateUsingJWKIfKeyIdDoesNotMatch() throws Exception {
@@ -311,10 +318,11 @@ public class JwtAuthenticationProviderTest {
         KeyPair keyPair = RSAKeyPair();
         when(jwkProvider.get(eq("key-id"))).thenThrow(SigningKeyNotFoundException.class);
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("some")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -335,10 +343,11 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenThrow(InvalidPublicKeyException.class);
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("some")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -357,10 +366,11 @@ public class JwtAuthenticationProviderTest {
         KeyPair keyPair = RSAKeyPair();
         when(jwkProvider.get(eq("key-id"))).thenThrow(JwkException.class);
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("some")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);
@@ -371,7 +381,6 @@ public class JwtAuthenticationProviderTest {
         provider.authenticate(authentication);
     }
 
-
     @Test
     public void shouldAuthenticateUsingJWK() throws Exception {
         Jwk jwk = mock(Jwk.class);
@@ -381,10 +390,11 @@ public class JwtAuthenticationProviderTest {
         when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
                 .withAudience("audience")
                 .withIssuer("issuer")
-                .withClaim("kid", "key-id")
+                .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
         Authentication authentication = new JwtAuthentication(token);

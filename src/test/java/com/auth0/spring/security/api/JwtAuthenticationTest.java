@@ -14,6 +14,8 @@ import org.junit.rules.ExpectedException;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -82,13 +84,14 @@ public class JwtAuthenticationTest {
 
     @Test
     public void shouldGetKeyId() throws Exception {
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
-                .withClaim("kid", "my-key-id")
+                .withHeader(keyIdHeader)
                 .sign(hmacAlgorithm);
 
         JwtAuthentication auth = new JwtAuthentication(token);
         assertThat(auth, is(notNullValue()));
-        assertThat(auth.getKeyId(), is("my-key-id"));
+        assertThat(auth.getKeyId(), is("key-id"));
     }
 
     @Test

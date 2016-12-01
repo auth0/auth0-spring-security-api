@@ -32,7 +32,7 @@ public class JwtAuthentication implements Authentication {
     }
 
     public String getKeyId() {
-        return decoded.getClaim("kid").asString();
+        return decoded.getKeyId();
     }
 
     @Override
