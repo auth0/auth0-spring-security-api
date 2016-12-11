@@ -42,12 +42,37 @@ public class BearerSecurityContextRepositoryTest {
         BearerSecurityContextRepository repository = new BearerSecurityContextRepository();
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, null);
-        when(request.getHeader("Authorization")).thenReturn("Bearer ");
+        when(request.getHeader("Authorization")).thenReturn("Bearer  <Invalid>");
 
         SecurityContext context = repository.loadContext(holder);
         assertThat(context, is(notNullValue()));
         assertThat(context.getAuthentication(), is(nullValue()));
     }
+
+    @Test
+    public void shouldLoadContextWithoutAuthenticationIfEmptyAuthorizationHeaderValue() throws Exception {
+        BearerSecurityContextRepository repository = new BearerSecurityContextRepository();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, null);
+        when(request.getHeader("Authorization")).thenReturn("Bearer");
+
+        SecurityContext context = repository.loadContext(holder);
+        assertThat(context, is(notNullValue()));
+        assertThat(context.getAuthentication(), is(nullValue()));
+    }
+
+    @Test
+    public void shouldLoadContextWithoutAuthenticationIfAuthorizationHeaderValueNotBearerToken() throws Exception {
+        BearerSecurityContextRepository repository = new BearerSecurityContextRepository();
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, null);
+        when(request.getHeader("Authorization")).thenReturn("Basic somevalue");
+
+        SecurityContext context = repository.loadContext(holder);
+        assertThat(context, is(notNullValue()));
+        assertThat(context.getAuthentication(), is(nullValue()));
+    }
+
 
     @Test
     public void shouldLoadContextWithAuthentication() throws Exception {
