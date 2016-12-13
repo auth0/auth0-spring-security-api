@@ -1,5 +1,6 @@
 package com.auth0.spring.security.api;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
@@ -14,7 +15,11 @@ public class BearerSecurityContextRepository implements SecurityContextRepositor
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         String token = tokenFromRequest(requestResponseHolder.getRequest());
         if (token != null) {
-            context.setAuthentication(new JwtAuthentication(token));
+            try {
+                context.setAuthentication(new JwtAuthentication(token));
+            } catch (JWTVerificationException e) {
+                // no-op, return empty context
+            }
         }
         return context;
     }
