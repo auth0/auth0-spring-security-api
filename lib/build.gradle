@@ -11,16 +11,16 @@ oss {
 
 developers {
     auth0 {
-        displayName = "Auth0"
-        email = "oss@auth0.com"
+        displayName = 'Auth0'
+        email = 'oss@auth0.com'
     }
     lbalmaceda {
-        displayName = "Luciano Balmaceda"
-        email = "luciano.balmaceda@auth0.com"
+        displayName = 'Luciano Balmaceda'
+        email = 'luciano.balmaceda@auth0.com'
     }
     hzalaz {
-        displayName = "Hernan Zalazar"
-        email = "hernan@auth0.com"
+        displayName = 'Hernan Zalazar'
+        email = 'hernan@auth0.com'
     }
 }
 
@@ -58,12 +58,11 @@ jacocoTestReport {
 
 test {
     testLogging {
-        events "passed", "skipped", "failed", "standardError"
-        exceptionFormat "short"
+        events 'passed', 'skipped', 'failed', 'standardError'
+        exceptionFormat 'short'
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
-    delete 'CHANGELOG.md.release'
+clean.doFirst {
+    new File('CHANGELOG.md.release').delete()
 }

@@ -7,23 +7,21 @@
 
 ## Download
 
-Get Auth0 Spring Security API via [JitPack](https://jitpack.io):
+Get Auth0 Spring Security API using Maven:
 
 ```xml
 <dependency>
     <groupId>com.github.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0-rc.1</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0.github:auth0-spring-security-api:0.0.1'
+compile 'com.auth0.github:auth0-spring-security-api:1.0.0-rc.1'
 ```
-
-> Remember to add JitPack repositories
 
 ## Usage
 
