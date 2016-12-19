@@ -13,14 +13,14 @@ Get Auth0 Spring Security API via [JitPack](https://jitpack.io):
 <dependency>
     <groupId>com.github.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
-    <version>v1-SNAPSHOT</version>
+    <version>0.0.1</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-compile 'com.auth0.github:auth0-spring-security-api:v1-SNAPSHOT'
+compile 'com.auth0.github:auth0-spring-security-api:0.0.1'
 ```
 
 > Remember to add JitPack repositories
