@@ -8,85 +8,14 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:2.2.2'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7'
-        classpath "gradle.plugin.com.auth0.gradle:oss-library:0.2.2"
+        classpath "gradle.plugin.com.auth0.gradle:oss-library:0.2.11"
     }
 }
 
-project.group = 'com.auth0'
+allprojects {
+    group = 'com.auth0'
 
-repositories {
-    jcenter()
-}
-
-apply plugin: 'idea'
-apply plugin: 'java'
-apply plugin: "jacoco"
-apply from: 'scripts/release.gradle'
-apply from: 'scripts/maven.gradle'
-apply from: 'scripts/bintray.gradle'
-
-auth0 {
-    name 'auth0-spring-security-api'
-    repo 'auth0-spring-security-api'
-    description 'Auth0 Java Sprint integration for API'
-    url 'https://auth0.com'
-    developer {
-        id = "auth0"
-        name = "Auth0"
-        email = "oss@auth0.com"
+    repositories {
+        jcenter()
     }
-    developer {
-        id = "lbalmaceda"
-        name = "Luciano Balmaceda"
-        email = "luciano.balmaceda@auth0.com"
-    }
-    developer {
-        id = "hzalaz"
-        name = "Hernan Zalazar"
-        email = "hernan@auth0.com"
-    }
-}
-
-logger.lifecycle("Using version ${version} for ${group}.${name}")
-
-compileJava {
-    sourceCompatibility '1.7'
-    targetCompatibility '1.7'
-}
-
-dependencies {
-    compile 'com.auth0:java-jwt:3.0.2'
-    compile 'com.auth0:jwks-rsa:0.2.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
-    compile 'commons-codec:commons-codec:1.9'
-    compile 'com.google.guava:guava:19.0'
-    compile 'org.springframework.security:spring-security-core:4.0.4.RELEASE'
-    compile 'org.springframework.security:spring-security-web:4.0.4.RELEASE'
-    compile 'org.springframework.security:spring-security-config:4.0.4.RELEASE'
-    compile 'org.slf4j:slf4j-api:1.7.21'
-    compileOnly 'javax.servlet:servlet-api:2.5'
-
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testCompile 'org.mockito:mockito-core:2.2.8'
-    testCompile 'javax.servlet:servlet-api:2.5'
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-}
-
-test {
-    testLogging {
-        events "passed", "skipped", "failed", "standardError"
-        exceptionFormat "short"
-    }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
-    delete 'CHANGELOG.md.release'
 }

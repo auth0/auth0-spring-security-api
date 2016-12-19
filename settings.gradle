@@ -1,0 +1,2 @@
+include ':auth0-spring-security-api'
+project(':auth0-spring-security-api').projectDir = new File(rootProject.projectDir, '/lib')
