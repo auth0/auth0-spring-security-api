@@ -5,6 +5,8 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.hamcrest.Matchers;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,7 +52,7 @@ public class JwtAuthenticationProviderTest {
     public void shouldSupportJwkAuthentication() throws Exception {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience");
 
-        assertThat(provider.supports(JwtAuthentication.class), is(true));
+        assertThat(provider.supports(AuthenticationJsonWebToken.class), is(true));
     }
 
     // HS
@@ -62,7 +64,7 @@ public class JwtAuthenticationProviderTest {
                 .withIssuer("issuer")
                 .withAudience("audience")
                 .sign(Algorithm.HMAC256("not-real-secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -76,7 +78,7 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withIssuer("issuer")
                 .sign(Algorithm.HMAC256("secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -90,7 +92,7 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withAudience("audience")
                 .sign(Algorithm.HMAC256("secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -105,7 +107,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("audience")
                 .withIssuer("some")
                 .sign(Algorithm.HMAC256("secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -120,7 +122,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("some")
                 .withIssuer("issuer")
                 .sign(Algorithm.HMAC256("secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -135,7 +137,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("audience")
                 .withIssuer("issuer")
                 .sign(Algorithm.HMAC256("secret"));
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         Authentication result = provider.authenticate(authentication);
 
@@ -164,7 +166,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair2.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -187,7 +189,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -210,7 +212,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -232,7 +234,7 @@ public class JwtAuthenticationProviderTest {
                 .withIssuer("issuer")
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("No kid found in jwt");
@@ -255,7 +257,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -279,7 +281,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(BadCredentialsException.class);
         exception.expectMessage("Not a valid token");
@@ -303,7 +305,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(AuthenticationServiceException.class);
         exception.expectMessage("Missing jwk provider");
@@ -325,7 +327,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(AuthenticationServiceException.class);
         exception.expectMessage("Could not retrieve jwks from issuer");
@@ -350,7 +352,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(AuthenticationServiceException.class);
         exception.expectMessage("Could not retrieve public key from issuer");
@@ -373,7 +375,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         exception.expect(AuthenticationServiceException.class);
         exception.expectMessage("Cannot authenticate with jwt");
@@ -397,7 +399,7 @@ public class JwtAuthenticationProviderTest {
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
-        Authentication authentication = new JwtAuthentication(token);
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         Authentication result = provider.authenticate(authentication);
 

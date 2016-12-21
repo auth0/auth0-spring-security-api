@@ -1,26 +1,25 @@
-package com.auth0.spring.security.api;
+package com.auth0.spring.security.api.authentication;
 
 import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import org.hamcrest.Matchers;
-import org.hamcrest.collection.IsCollectionWithSize;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.springframework.security.core.GrantedAuthority;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
+import static com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken.usingToken;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.*;
 
-public class JwtAuthenticationTest {
+public class PreAuthenticatedAuthenticationJsonWebTokenTest {
 
     @Rule
     public ExpectedException exception = ExpectedException.none();
@@ -37,49 +36,22 @@ public class JwtAuthenticationTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.isAuthenticated(), is(false));
     }
 
     @Test
-    public void shouldCreateAuthenticatedInstance() throws Exception {
+    public void shouldAlwaysBeNonAuthenticated() throws Exception {
         String token = JWT.create()
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
-        JWTVerifier verifier = JWT.require(hmacAlgorithm).build();
 
-        JwtAuthentication auth = new JwtAuthentication(token, verifier);
-        assertThat(auth, is(notNullValue()));
-        assertThat(auth.isAuthenticated(), is(true));
-    }
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
 
-    @Test
-    public void shouldAllowToChangeAuthenticatedToFalse() throws Exception {
-        String token = JWT.create()
-                .sign(hmacAlgorithm);
-        JWTVerifier verifier = JWT.require(hmacAlgorithm).build();
-
-        JwtAuthentication auth = new JwtAuthentication(token, verifier);
-        assertThat(auth, is(notNullValue()));
-        assertThat(auth.isAuthenticated(), is(true));
-
-        auth.setAuthenticated(false);
         assertThat(auth.isAuthenticated(), is(false));
-    }
-
-    @Test
-    public void shouldNotAllowToChangeAuthenticatedToTrue() throws Exception {
-        String token = JWT.create()
-                .sign(hmacAlgorithm);
-
-        JwtAuthentication auth = new JwtAuthentication(token);
-        assertThat(auth, is(notNullValue()));
-        assertThat(auth.isAuthenticated(), is(false));
-
-        exception.expect(IllegalArgumentException.class);
-        exception.expectMessage("Must create a new instance to specify that the authentication is valid");
         auth.setAuthenticated(true);
+        assertThat(auth.isAuthenticated(), is(false));
     }
 
     @Test
@@ -89,7 +61,7 @@ public class JwtAuthenticationTest {
                 .withHeader(keyIdHeader)
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is("key-id"));
     }
@@ -99,7 +71,7 @@ public class JwtAuthenticationTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is(nullValue()));
     }
@@ -110,7 +82,7 @@ public class JwtAuthenticationTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getToken(), is(token));
     }
@@ -121,7 +93,7 @@ public class JwtAuthenticationTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getCredentials(), is(notNullValue()));
         assertThat(auth.getCredentials(), is(instanceOf(String.class)));
@@ -134,10 +106,10 @@ public class JwtAuthenticationTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getDetails(), is(notNullValue()));
-        assertThat(auth.getDetails(), is(instanceOf(DecodedJWT.class)));
+        assertThat(auth.getDetails(), is(instanceOf(JWT.class)));
     }
 
     @Test
@@ -146,7 +118,7 @@ public class JwtAuthenticationTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(notNullValue()));
         assertThat(auth.getPrincipal(), is(instanceOf(String.class)));
@@ -158,7 +130,7 @@ public class JwtAuthenticationTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(nullValue()));
     }
@@ -169,7 +141,7 @@ public class JwtAuthenticationTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(notNullValue()));
         assertThat(auth.getName(), is(instanceOf(String.class)));
@@ -181,7 +153,7 @@ public class JwtAuthenticationTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(nullValue()));
     }
@@ -191,39 +163,22 @@ public class JwtAuthenticationTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
     }
 
     @Test
-    public void shouldGetEmptyAuthoritiesOnEmptyScopeClaim() throws Exception {
+    public void shouldAlwaysGetEmptyAuthorities() throws Exception {
         String token = JWT.create()
-                .withClaim("scope", "   ")
+                .withClaim("scope", "read:users add:users")
                 .sign(hmacAlgorithm);
 
-        JwtAuthentication auth = new JwtAuthentication(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
     }
 
-    @Test
-    public void shouldGetScopeAsAuthorities() throws Exception {
-        String token = JWT.create()
-                .withClaim("scope", "auth0 auth10")
-                .sign(hmacAlgorithm);
-
-        JwtAuthentication auth = new JwtAuthentication(token);
-        assertThat(auth, is(notNullValue()));
-        assertThat(auth.getAuthorities(), is(notNullValue()));
-        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
-
-        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
-        assertThat(authorities.get(0), is(notNullValue()));
-        assertThat(authorities.get(0).getAuthority(), is("auth0"));
-        assertThat(authorities.get(1), is(notNullValue()));
-        assertThat(authorities.get(1).getAuthority(), is("auth10"));
-    }
 }

@@ -1,6 +1,11 @@
 package com.auth0.spring.security.api;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
@@ -10,16 +15,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 public class BearerSecurityContextRepository implements SecurityContextRepository {
+    private final static Logger logger = LoggerFactory.getLogger(BearerSecurityContextRepository.class);
+
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         String token = tokenFromRequest(requestResponseHolder.getRequest());
-        if (token != null) {
-            try {
-                context.setAuthentication(new JwtAuthentication(token));
-            } catch (JWTVerificationException e) {
-                // no-op, return empty context
-            }
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+        if (authentication != null) {
+            context.setAuthentication(authentication);
+            logger.debug("Found bearer token in request. Saving it in SecurityContext");
         }
         return context;
     }
