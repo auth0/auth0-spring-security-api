@@ -1,4 +1,4 @@
-package com.auth0.spring.security.api;
+package com.auth0.spring.security.api.authentication;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
@@ -13,26 +13,29 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JwtAuthentication implements Authentication {
+public class AuthenticationJsonWebToken implements Authentication, JwtAuthentication {
 
     private final DecodedJWT decoded;
     private boolean authenticated;
 
-    public JwtAuthentication(String token) throws JWTDecodeException {
-        this(token, null);
-    }
-
-    public JwtAuthentication(String token, JWTVerifier verifier) throws JWTVerificationException {
+    AuthenticationJsonWebToken(String token, JWTVerifier verifier) throws JWTVerificationException {
         this.decoded = verifier == null ? JWT.decode(token) : verifier.verify(token);
         this.authenticated = verifier != null;
     }
 
+    @Override
     public String getToken() {
         return decoded.getToken();
     }
 
+    @Override
     public String getKeyId() {
         return decoded.getKeyId();
+    }
+
+    @Override
+    public Authentication verify(JWTVerifier verifier) throws JWTVerificationException {
+        return new AuthenticationJsonWebToken(getToken(), verifier);
     }
 
     @Override

@@ -2,6 +2,8 @@ package com.auth0.spring.security.api;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.junit.Test;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
@@ -86,7 +88,7 @@ public class BearerSecurityContextRepositoryTest {
         SecurityContext context = repository.loadContext(holder);
         assertThat(context, is(notNullValue()));
         assertThat(context.getAuthentication(), is(notNullValue()));
-        assertThat(context.getAuthentication(), is(instanceOf(JwtAuthentication.class)));
+        assertThat(context.getAuthentication(), is(instanceOf(PreAuthenticatedAuthenticationJsonWebToken.class)));
         assertThat(context.getAuthentication().isAuthenticated(), is(false));
     }
 

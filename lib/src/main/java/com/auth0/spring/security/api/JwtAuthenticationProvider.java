@@ -5,6 +5,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.auth0.spring.security.api.authentication.JwtAuthentication;
+import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -51,7 +54,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         JwtAuthentication jwt = (JwtAuthentication) authentication;
         try {
-            final JwtAuthentication jwtAuth = new JwtAuthentication(jwt.getToken(), jwtVerifier(jwt));
+            final Authentication jwtAuth = jwt.verify(jwtVerifier(jwt));
             logger.info("Authenticated with jwt with scopes {}", jwtAuth.getAuthorities());
             return jwtAuth;
         } catch (JWTVerificationException e) {
