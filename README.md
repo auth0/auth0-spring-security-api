@@ -3,7 +3,7 @@
 [![Build][travis-ci-badge]][travis-ci-url]
 [![MIT][mit-badge]][mit-url]
 [![Maven][maven-badge]][maven-url]
-
+[![Download][jcenter-badge]][jcenter-url]
 
 ## Download
 
@@ -11,7 +11,7 @@ Get Auth0 Spring Security API using Maven:
 
 ```xml
 <dependency>
-    <groupId>com.github.auth0</groupId>
+    <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
     <version>1.0.0-rc.2</version>
 </dependency>
@@ -20,7 +20,7 @@ Get Auth0 Spring Security API using Maven:
 or Gradle:
 
 ```gradle
-compile 'com.auth0.github:auth0-spring-security-api:1.0.0-rc.1'
+compile 'com.auth0:auth0-spring-security-api:1.0.0-rc.2'
 ```
 
 ## Usage
@@ -127,3 +127,5 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 [mit-url]: https://raw.githubusercontent.com/auth0/auth0-java/master/LICENSE
 [maven-badge]: https://img.shields.io/maven-central/v/com.auth0/auth0-spring-security-api.svg
 [maven-url]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0%22%20AND%20a%3A%22auth0-spring-security-api%22
+[jcenter-badge]: https://api.bintray.com/packages/auth0/java/auth0-spring-security-api/images/download.svg
+[jcenter-url]: https://bintray.com/auth0/java/auth0-spring-security-api/_latestVersion
