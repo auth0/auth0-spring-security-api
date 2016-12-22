@@ -5,6 +5,10 @@
 [![Maven][maven-badge]][maven-url]
 [![Download][jcenter-badge]][jcenter-url]
 
+Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
+
+> If you need to check the old version please check the branch [v0](https://github.com/auth0/auth0-spring-security-api/tree/v0)
+
 ## Download
 
 Get Auth0 Spring Security API using Maven:
