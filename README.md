@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         JwtWebSecurityConfigurer
-                .forHS256WithBase64Secret("YOUR_API_AUDIENCE", "YOUR_API_ISSUER", "YOUR_BASE_64_ENCODED_SECRET")
+                .forHS256("YOUR_API_AUDIENCE", "YOUR_API_ISSUER", "YOUR_API_SECRET".getBytes())
                 .configure(http);
     }
 }
