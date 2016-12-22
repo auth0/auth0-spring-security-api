@@ -4,6 +4,7 @@
 [![MIT][mit-badge]][mit-url]
 [![Maven][maven-badge]][maven-url]
 [![Download][jcenter-badge]][jcenter-url]
+[![codecov][codecov-badge]][codecov-url]
 
 Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
 
@@ -133,3 +134,5 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 [maven-url]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0%22%20AND%20a%3A%22auth0-spring-security-api%22
 [jcenter-badge]: https://api.bintray.com/packages/auth0/java/auth0-spring-security-api/images/download.svg
 [jcenter-url]: https://bintray.com/auth0/java/auth0-spring-security-api/_latestVersion
+[codecov-badge]: https://codecov.io/gh/auth0/auth0-spring-security-api/branch/master/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/auth0/auth0-spring-security-api
