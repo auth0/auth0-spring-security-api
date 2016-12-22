@@ -9,4 +9,3 @@ jdk:
 branches:
   only:
   - master
-  - v1
