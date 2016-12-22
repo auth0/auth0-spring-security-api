@@ -7,20 +7,19 @@ oss {
     repository 'auth0-spring-security-api'
     organization 'auth0'
     description 'Auth0 Java Spring integration for API'
-}
-
-developers {
-    auth0 {
-        displayName = 'Auth0'
-        email = 'oss@auth0.com'
-    }
-    lbalmaceda {
-        displayName = 'Luciano Balmaceda'
-        email = 'luciano.balmaceda@auth0.com'
-    }
-    hzalaz {
-        displayName = 'Hernan Zalazar'
-        email = 'hernan@auth0.com'
+    developers {
+        auth0 {
+            displayName = 'Auth0'
+            email = 'oss@auth0.com'
+        }
+        lbalmaceda {
+            displayName = 'Luciano Balmaceda'
+            email = 'luciano.balmaceda@auth0.com'
+        }
+        hzalaz {
+            displayName = 'Hernan Zalazar'
+            email = 'hernan@auth0.com'
+        }
     }
 }
 
