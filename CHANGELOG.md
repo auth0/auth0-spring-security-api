@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.0-rc.2](https://github.com/auth0/auth0-spring-security-api/tree/1.0.0-rc.2) (2016-12-21)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0-rc.1...1.0.0-rc.2)
+
+**Changed**
+- Rework authentication classes and add more tests. [\#22](https://github.com/auth0/auth0-spring-security-api/pull/22) ([hzalaz](https://github.com/hzalaz))
+
 ## [1.0.0-rc.1](https://github.com/auth0/java-jwt/tree/1.0.0-rc.1) (2016-12-19)
 
 Auth0 integration with Spring Security to add authorization to your API using JWTs
