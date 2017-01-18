@@ -95,6 +95,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
+## Sample
+
+Perhaps the easiest way to learn how to use this library (and quickly get started with a working app) is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample/tree/v1) and its README.
+
 
 ## What is Auth0?
 
