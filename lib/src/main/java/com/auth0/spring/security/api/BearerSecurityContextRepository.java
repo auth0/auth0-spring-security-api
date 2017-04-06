@@ -1,7 +1,5 @@
 package com.auth0.spring.security.api;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
 import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
