@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.spring.security.api.JwtAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,9 +18,9 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
 
     private static Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
-    private final JWT token;
+    private final DecodedJWT token;
 
-    PreAuthenticatedAuthenticationJsonWebToken(JWT token) {
+    PreAuthenticatedAuthenticationJsonWebToken(DecodedJWT token) {
         this.token = token;
     }
 
@@ -64,7 +65,7 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
             return null;
         }
         try {
-            JWT jwt = JWT.decode(token);
+            DecodedJWT jwt = JWT.decode(token);
             return new PreAuthenticatedAuthenticationJsonWebToken(jwt);
         } catch (JWTDecodeException e) {
             logger.debug("Failed to decode token as jwt", e);

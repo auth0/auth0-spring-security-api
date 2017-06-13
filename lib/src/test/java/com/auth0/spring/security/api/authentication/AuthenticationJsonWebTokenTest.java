@@ -128,7 +128,7 @@ public class AuthenticationJsonWebTokenTest {
         AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getDetails(), is(notNullValue()));
-        assertThat(auth.getDetails(), is(instanceOf(JWT.class)));
+        assertThat(auth.getDetails(), is(instanceOf(DecodedJWT.class)));
     }
 
     @Test

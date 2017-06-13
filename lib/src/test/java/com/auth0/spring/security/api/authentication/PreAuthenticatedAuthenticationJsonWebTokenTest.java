@@ -2,6 +2,7 @@ package com.auth0.spring.security.api.authentication;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsEmptyCollection;
 import org.junit.Before;
@@ -109,7 +110,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
         PreAuthenticatedAuthenticationJsonWebToken auth = usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getDetails(), is(notNullValue()));
-        assertThat(auth.getDetails(), is(instanceOf(JWT.class)));
+        assertThat(auth.getDetails(), is(instanceOf(DecodedJWT.class)));
     }
 
     @Test
