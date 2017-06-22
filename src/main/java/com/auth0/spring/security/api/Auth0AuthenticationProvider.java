@@ -112,7 +112,7 @@ public class Auth0AuthenticationProvider implements AuthenticationProvider, Init
 //                    final String publicKeyRealPath = servletContext.getRealPath(publicKeyPath);
                     final PublicKey publicKey = readPublicKey(publicKeyRealPath);
                     Validate.notNull(publicKey);
-                    jwtVerifier = new JWTVerifier(publicKey, clientId);
+                    jwtVerifier = new JWTVerifier(publicKey, clientId, issuer);
                     return;
                 } catch (Exception e) {
                     throw new IllegalStateException(e.getMessage(), e.getCause());
