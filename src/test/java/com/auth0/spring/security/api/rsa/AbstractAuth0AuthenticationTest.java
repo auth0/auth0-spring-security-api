@@ -1,5 +1,7 @@
-package com.auth0.spring.security.api;
+package com.auth0.spring.security.api.rsa;
 
+import com.auth0.spring.security.api.Auth0SecurityConfig;
+import com.auth0.spring.security.api.Auth0TokenHelper;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,11 +40,11 @@ public abstract class AbstractAuth0AuthenticationTest {
                 .build();
     }
 
-    protected String generateTokenWithExpirationDate(long exp) throws Exception {
+    protected String generateTokenWithExpirationDate(String iss, String aud, long exp) throws Exception {
         final Map<String, Object> map = new HashMap<String, Object>();
         map.put("email", "auth0@test.com");
         map.put("email_verified", true);
-        return tokenHelper.generateToken(map, exp);
+        return tokenHelper.generateToken(map, iss, aud, exp);
     }
 
     protected ResultActions callUrlWithoutToken(String url) throws Exception {

@@ -6,3 +6,4 @@ target/
 .mvn
 *.iml
 .idea/
+.DS_STORE
