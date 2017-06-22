@@ -1,12 +1,12 @@
-package com.auth0.spring.security.api;
+package com.auth0.spring.security.api.hmac;
 
 import com.auth0.Auth0Exception;
 import com.auth0.jwt.JWTSigner;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.JWTVerifyException;
+import com.auth0.spring.security.api.Auth0TokenHelper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -16,23 +16,20 @@ import java.security.SignatureException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, InitializingBean {
+public class Auth0HMACTokenHelper extends Auth0TokenHelper<Object> {
 
-    private String clientSecret = null;
-    private String clientId = null;
-
+    @SuppressWarnings("unchecked")
     @Override
-    public String generateToken(final Object object, final long expiration) {
+    public String generateToken(final Object object, String issuer, String audience, final long expiration) {
         Assert.isInstanceOf(java.util.Map.class, object, "Claims object is not a java.util.Map");
         try {
-            final JWTSigner jwtSigner = new JWTSigner(Base64.decodeBase64(clientSecret));
+            final JWTSigner jwtSigner = new JWTSigner(Base64.decodeBase64(getClientSecret()));
             final HashMap<String, Object> claims = new HashMap<>();
             claims.putAll((Map) object);
             claims.put("exp", expiration);
-            claims.put("iss", "YOUR_ISSUER");
-            claims.put("aud", "YOUR_CLIENT_ID");
-            final String token = jwtSigner.sign(claims);
-            return token;
+            claims.put("iss", issuer);
+            claims.put("aud", audience);
+            return jwtSigner.sign(claims);
         } catch (Exception e) {
             throw new Auth0Exception("Token generation error", e);
         }
@@ -40,12 +37,11 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
 
     @Override
     public Object decodeToken(final String token) {
-        final JWTVerifier jwtVerifier = new JWTVerifier(Base64.decodeBase64(clientSecret), clientId);
+        final JWTVerifier jwtVerifier = new JWTVerifier(Base64.decodeBase64(getClientSecret()), getClientId());
         try {
             final Map<String, Object> verify = jwtVerifier.verify(token);
             final String payload = (String) verify.get("$");
-            @SuppressWarnings("unchecked")
-            final Map<String, String> map = new ObjectMapper().readValue(payload, Map.class);
+            @SuppressWarnings("unchecked") final Map<String, String> map = new ObjectMapper().readValue(payload, Map.class);
             return map;
         } catch (InvalidKeyException e) {
             throw new Auth0Exception("InvalidKeyException during decodeToken operation", e);
@@ -61,27 +57,4 @@ public class Auth0TokenHelperImpl implements Auth0TokenHelper<Object>, Initializ
             throw new Auth0Exception("JWTVerifyException during decodeToken operation", e);
         }
     }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        Assert.notNull(clientSecret, "The client secret is not set for " + this.getClass());
-        Assert.notNull(clientId, "The client id is not set for " + this.getClass());
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public void setClientSecret(String clientSecret) {
-        this.clientSecret = clientSecret;
-    }
-
-    public String getClientId() {
-        return clientId;
-    }
-
-    public void setClientId(String clientId) {
-        this.clientId = clientId;
-    }
-
 }
