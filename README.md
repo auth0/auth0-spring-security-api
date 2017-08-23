@@ -1,4 +1,4 @@
-    # Auth0 Spring Security for API
+# Auth0 Spring Security for API
 
 [![Build][travis-ci-badge]][travis-ci-url]
 [![MIT][mit-badge]][mit-url]
