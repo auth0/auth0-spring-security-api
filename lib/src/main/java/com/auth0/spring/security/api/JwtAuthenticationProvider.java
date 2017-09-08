@@ -25,6 +25,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private final String audience;
     private final JwkProvider jwkProvider;
 
+    private long leeway = 0;
+
     public JwtAuthenticationProvider(byte[] secret, String issuer, String audience) {
         this.secret = secret;
         this.issuer = issuer;
@@ -60,9 +62,14 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
+    public JwtAuthenticationProvider withJWTVerifyLeeway(long leeway) {
+    	this.leeway = leeway;
+    	return this;
+    }
+
     private JWTVerifier jwtVerifier(JwtAuthentication authentication) throws AuthenticationException {
         if (secret != null) {
-            return providerForHS256(secret, issuer, audience);
+            return providerForHS256(secret, issuer, audience, this.leeway);
         }
         final String kid = authentication.getKeyId();
         if (kid == null) {
@@ -73,7 +80,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
         try {
             final Jwk jwk = jwkProvider.get(kid);
-            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience);
+            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience, this.leeway);
         } catch (SigningKeyNotFoundException e) {
             throw new AuthenticationServiceException("Could not retrieve jwks from issuer", e);
         } catch (InvalidPublicKeyException e) {
@@ -83,17 +90,19 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    private static JWTVerifier providerForRS256(RSAPublicKey key, String issuer, String audience) {
+    private static JWTVerifier providerForRS256(RSAPublicKey key, String issuer, String audience, long leeway) {
         return JWT.require(Algorithm.RSA256(key))
                 .withIssuer(issuer)
                 .withAudience(audience)
+                .acceptLeeway(leeway)
                 .build();
     }
 
-    private static JWTVerifier providerForHS256(byte[] secret, String issuer, String audience) {
+    private static JWTVerifier providerForHS256(byte[] secret, String issuer, String audience, long leeway) {
         return JWT.require(Algorithm.HMAC256(secret))
                 .withIssuer(issuer)
                 .withAudience(audience)
+                .acceptLeeway(leeway)
                 .build();
     }
 }
