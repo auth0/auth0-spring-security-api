@@ -35,7 +35,6 @@ dependencies {
     compile 'com.auth0:jwks-rsa:0.2.0'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.8.1'
     compile 'commons-codec:commons-codec:1.9'
-    compile 'com.google.guava:guava:19.0'
     compile 'org.springframework.security:spring-security-core:4.0.4.RELEASE'
     compile 'org.springframework.security:spring-security-web:4.0.4.RELEASE'
     compile 'org.springframework.security:spring-security-config:4.0.4.RELEASE'
