@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.0.0](https://github.com/auth0/auth0-spring-security-api/tree/1.0.0) (2018-01-26)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0-rc.3...1.0.0)
+
+**Changed**
+- Remove unused guava dependency Issue #47 [\#48](https://github.com/auth0/auth0-spring-security-api/pull/48) ([rhanton](https://github.com/rhanton))
+
 ## [1.0.0-rc.3](https://github.com/auth0/auth0-spring-security-api/tree/1.0.0-rc.3) (2017-06-13)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0-rc.2...1.0.0-rc.3)
 
