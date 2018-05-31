@@ -62,14 +62,21 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    public JwtAuthenticationProvider withJWTVerifyLeeway(long leeway) {
-    	this.leeway = leeway;
-    	return this;
+    /**
+     * Allow a leeway to use on the JWT verification.
+     *
+     * @param leeway the leeway value to use expressed in seconds.
+     * @return this same provider instance to chain calls.
+     */
+    @SuppressWarnings("unused")
+    public JwtAuthenticationProvider withJwtVerifierLeeway(long leeway) {
+        this.leeway = leeway;
+        return this;
     }
 
     private JWTVerifier jwtVerifier(JwtAuthentication authentication) throws AuthenticationException {
         if (secret != null) {
-            return providerForHS256(secret, issuer, audience, this.leeway);
+            return providerForHS256(secret, issuer, audience, leeway);
         }
         final String kid = authentication.getKeyId();
         if (kid == null) {
@@ -80,7 +87,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
         try {
             final Jwk jwk = jwkProvider.get(kid);
-            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience, this.leeway);
+            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience, leeway);
         } catch (SigningKeyNotFoundException e) {
             throw new AuthenticationServiceException("Could not retrieve jwks from issuer", e);
         } catch (InvalidPublicKeyException e) {
