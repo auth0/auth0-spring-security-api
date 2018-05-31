@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.1.0](https://github.com/auth0/auth0-spring-security-api/tree/1.1.0) (2018-05-31)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0...1.1.0)
+
+**Added**
+- Allow to set a leeway for JWT verification [\#57](https://github.com/auth0/auth0-spring-security-api/pull/57) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.0.0](https://github.com/auth0/auth0-spring-security-api/tree/1.0.0) (2018-01-26)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0-rc.3...1.0.0)
 
