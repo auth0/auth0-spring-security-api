@@ -5,7 +5,6 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.spring.security.api.JwtAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -16,7 +15,7 @@ import java.util.Collections;
 
 public class PreAuthenticatedAuthenticationJsonWebToken implements Authentication, JwtAuthentication {
 
-    private static Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
+    private static Logger logger = LoggerFactory.getLogger(PreAuthenticatedAuthenticationJsonWebToken.class);
 
     private final DecodedJWT token;
 

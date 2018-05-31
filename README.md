@@ -30,7 +30,7 @@ compile 'com.auth0:auth0-spring-security-api:1.0.0'
 
 ## Usage
 
-Inside a `WebSecurityConfigurerAdapter` you can configure your api to only accept `RS256` signed JWTs
+Inside a `WebSecurityConfigurerAdapter` you can configure your API to only accept `RS256` signed JWTs
 
 ```java
 @EnableWebSecurity
@@ -61,6 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ```
+
+> If you need further customization (like a leeway for JWT verification) use the `JwtWebSecurityConfigurer` signatures which accept a `JwtAuthenticationProvider`.
 
 
 Then using Spring Security `HttpSecurity` you can specify which paths requires authentication
