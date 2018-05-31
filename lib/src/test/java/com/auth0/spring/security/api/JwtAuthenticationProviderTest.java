@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
 import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.hamcrest.Matchers;
@@ -19,7 +20,9 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAKey;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
@@ -53,6 +56,14 @@ public class JwtAuthenticationProviderTest {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience");
 
         assertThat(provider.supports(AuthenticationJsonWebToken.class), is(true));
+    }
+
+    @Test
+    public void shouldReturnItselfWhenChangingJWTVerifierLeeway() throws Exception {
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience");
+        JwtAuthenticationProvider provider2 = provider.withJwtVerifierLeeway(1234);
+
+        assertThat(provider2, is(provider));
     }
 
     // HS
@@ -131,6 +142,26 @@ public class JwtAuthenticationProviderTest {
     }
 
     @Test
+    public void shouldFailToAuthenticateUsingSecretIfTokenHasExpired() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -10);
+        Date tenSecondsAgo = calendar.getTime();
+
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience");
+        String token = JWT.create()
+                .withAudience("audience")
+                .withIssuer("issuer")
+                .withExpiresAt(tenSecondsAgo)
+                .sign(Algorithm.HMAC256("secret"));
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        exception.expect(BadCredentialsException.class);
+        exception.expectMessage("Not a valid token");
+        exception.expectCause(Matchers.<Throwable>instanceOf(TokenExpiredException.class));
+        provider.authenticate(authentication);
+    }
+
+    @Test
     public void shouldAuthenticateUsingSecret() throws Exception {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience");
         String token = JWT.create()
@@ -141,6 +172,27 @@ public class JwtAuthenticationProviderTest {
 
         Authentication result = provider.authenticate(authentication);
 
+        assertThat(result, is(notNullValue()));
+        assertThat(result, is(not(equalTo(authentication))));
+    }
+
+    @Test
+    public void shouldAuthenticateUsingSecretWithExpiredTokenAndLeeway() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -10);
+        Date tenSecondsAgo = calendar.getTime();
+
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "issuer", "audience")
+                .withJwtVerifierLeeway(12);
+
+        String token = JWT.create()
+                .withAudience("audience")
+                .withIssuer("issuer")
+                .withExpiresAt(tenSecondsAgo)
+                .sign(Algorithm.HMAC256("secret"));
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        Authentication result = provider.authenticate(authentication);
         assertThat(result, is(notNullValue()));
         assertThat(result, is(not(equalTo(authentication))));
     }
@@ -230,7 +282,7 @@ public class JwtAuthenticationProviderTest {
         when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
         String token = JWT.create()
-                .withAudience("some")
+                .withAudience("audience")
                 .withIssuer("issuer")
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
 
@@ -322,7 +374,7 @@ public class JwtAuthenticationProviderTest {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
         Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
-                .withAudience("some")
+                .withAudience("audience")
                 .withIssuer("issuer")
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
@@ -347,7 +399,7 @@ public class JwtAuthenticationProviderTest {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
         Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
-                .withAudience("some")
+                .withAudience("audience")
                 .withIssuer("issuer")
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
@@ -370,7 +422,7 @@ public class JwtAuthenticationProviderTest {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
         Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
         String token = JWT.create()
-                .withAudience("some")
+                .withAudience("audience")
                 .withIssuer("issuer")
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
@@ -380,6 +432,35 @@ public class JwtAuthenticationProviderTest {
         exception.expect(AuthenticationServiceException.class);
         exception.expectMessage("Cannot authenticate with jwt");
         exception.expectCause(Matchers.<Throwable>instanceOf(JwkException.class));
+        provider.authenticate(authentication);
+    }
+
+    @Test
+    public void shouldFailToAuthenticateUsingJWKIfTokenHasExpired() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -10);
+        Date tenSecondsAgo = calendar.getTime();
+
+        Jwk jwk = mock(Jwk.class);
+        JwkProvider jwkProvider = mock(JwkProvider.class);
+
+        KeyPair keyPair = RSAKeyPair();
+        when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
+        when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
+        String token = JWT.create()
+                .withAudience("audience")
+                .withIssuer("issuer")
+                .withHeader(keyIdHeader)
+                .withExpiresAt(tenSecondsAgo)
+                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        exception.expect(BadCredentialsException.class);
+        exception.expectMessage("Not a valid token");
+        exception.expectCause(Matchers.<Throwable>instanceOf(TokenExpiredException.class));
         provider.authenticate(authentication);
     }
 
@@ -406,6 +487,36 @@ public class JwtAuthenticationProviderTest {
         assertThat(result, is(notNullValue()));
         assertThat(result, is(not(equalTo(authentication))));
     }
+
+    @Test
+    public void shouldAuthenticateUsingJWKWithExpiredTokenAndLeeway() throws Exception {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.SECOND, -10);
+        Date tenSecondsAgo = calendar.getTime();
+
+        Jwk jwk = mock(Jwk.class);
+        JwkProvider jwkProvider = mock(JwkProvider.class);
+
+        KeyPair keyPair = RSAKeyPair();
+        when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
+        when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "issuer", "audience")
+                .withJwtVerifierLeeway(12);
+
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
+        String token = JWT.create()
+                .withAudience("audience")
+                .withIssuer("issuer")
+                .withHeader(keyIdHeader)
+                .withExpiresAt(tenSecondsAgo)
+                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        Authentication result = provider.authenticate(authentication);
+        assertThat(result, is(notNullValue()));
+        assertThat(result, is(not(equalTo(authentication))));
+    }
+
 
     private KeyPair RSAKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
