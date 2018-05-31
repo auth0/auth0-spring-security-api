@@ -32,8 +32,8 @@ compileJava {
 
 dependencies {
     compile 'com.auth0:java-jwt:3.3.0'
-    compile 'com.auth0:jwks-rsa:0.3.0'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    compile 'com.auth0:jwks-rsa:0.4.0'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
     compile 'commons-codec:commons-codec:1.11'
     compile 'org.springframework.security:spring-security-core:4.2.4.RELEASE'
     compile 'org.springframework.security:spring-security-web:4.2.4.RELEASE'
