@@ -13,34 +13,17 @@ import org.springframework.security.core.GrantedAuthority;
 import java.util.Collection;
 import java.util.Collections;
 
-public class PreAuthenticatedAuthenticationJsonWebToken implements Authentication, JwtAuthentication {
+public class PreAuthenticatedAuthenticationJsonWebToken extends AuthenticationJsonWebToken {
 
     private static Logger logger = LoggerFactory.getLogger(PreAuthenticatedAuthenticationJsonWebToken.class);
 
-    private final DecodedJWT token;
-
     PreAuthenticatedAuthenticationJsonWebToken(DecodedJWT token) {
-        this.token = token;
+        super(token);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
-    }
-
-    @Override
-    public Object getCredentials() {
-        return token.getToken();
-    }
-
-    @Override
-    public Object getDetails() {
-        return token;
-    }
-
-    @Override
-    public Object getPrincipal() {
-        return token.getSubject();
     }
 
     @Override
@@ -51,11 +34,6 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
     @Override
     public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
 
-    }
-
-    @Override
-    public String getName() {
-        return token.getSubject();
     }
 
     public static PreAuthenticatedAuthenticationJsonWebToken usingToken(String token) {
@@ -73,17 +51,7 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
     }
 
     @Override
-    public String getToken() {
-        return token.getToken();
-    }
-
-    @Override
-    public String getKeyId() {
-        return token.getKeyId();
-    }
-
-    @Override
     public Authentication verify(JWTVerifier verifier) throws JWTVerificationException {
-        return new AuthenticationJsonWebToken(token.getToken(), verifier);
+        return new AuthenticationJsonWebToken(getDecoded().getToken(), verifier);
     }
 }

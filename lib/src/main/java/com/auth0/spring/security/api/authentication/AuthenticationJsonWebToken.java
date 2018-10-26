@@ -17,9 +17,17 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
     private final DecodedJWT decoded;
     private boolean authenticated;
 
+    AuthenticationJsonWebToken(DecodedJWT decoded) {
+        this.decoded = decoded;
+    }
+
     AuthenticationJsonWebToken(String token, JWTVerifier verifier) throws JWTVerificationException {
         this.decoded = verifier == null ? JWT.decode(token) : verifier.verify(token);
         this.authenticated = verifier != null;
+    }
+
+    DecodedJWT getDecoded() {
+        return decoded;
     }
 
     @Override
@@ -63,7 +71,13 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
 
     @Override
     public Object getPrincipal() {
-        return decoded.getSubject();
+        if (decoded.getSubject() != null) {
+            return decoded.getSubject(); // Not all providers set this field on Client Credentials Grant tokens
+        } else if (!decoded.getClaim("client_id").isNull()) {
+            return decoded.getClaim("client_id"); // Alternative for providers that don't
+        } else {
+            return decoded.getPayload(); // Fallback to value that should be unique
+        }
     }
 
     @Override
