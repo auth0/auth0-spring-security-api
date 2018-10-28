@@ -19,7 +19,7 @@ import org.springframework.security.core.Authentication;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAKey;
+import java.security.interfaces.RSAPrivateKey;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -31,6 +31,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({"RedundantThrows", "RedundantTypeArguments", "RedundantCast"})
 public class JwtAuthenticationProviderTest {
 
     @Rule
@@ -216,7 +217,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair2.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair2.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -239,7 +240,7 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -262,7 +263,7 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withAudience("test-audience")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -284,7 +285,7 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -307,7 +308,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("some-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -331,7 +332,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("some-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -355,7 +356,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -377,7 +378,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -402,7 +403,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -425,7 +426,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -454,7 +455,7 @@ public class JwtAuthenticationProviderTest {
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
                 .withExpiresAt(tenSecondsAgo)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -478,7 +479,7 @@ public class JwtAuthenticationProviderTest {
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
@@ -509,7 +510,7 @@ public class JwtAuthenticationProviderTest {
                 .withIssuer("test-issuer")
                 .withHeader(keyIdHeader)
                 .withExpiresAt(tenSecondsAgo)
-                .sign(Algorithm.RSA256((RSAKey) keyPair.getPrivate()));
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
         Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
 
         Authentication result = provider.authenticate(authentication);

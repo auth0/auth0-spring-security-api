@@ -31,7 +31,7 @@ compileJava {
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:3.3.0'
+    implementation 'com.auth0:java-jwt:3.4.1'
     implementation 'com.auth0:jwks-rsa:0.4.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
     implementation 'commons-codec:commons-codec:1.11'
