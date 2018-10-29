@@ -32,19 +32,19 @@ compileJava {
 
 dependencies {
     implementation 'com.auth0:java-jwt:3.4.1'
-    implementation 'com.auth0:jwks-rsa:0.4.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.5'
+    implementation 'com.auth0:jwks-rsa:0.6.1'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.7'
     implementation 'commons-codec:commons-codec:1.11'
-    implementation 'org.springframework.security:spring-security-core:4.2.4.RELEASE'
-    implementation 'org.springframework.security:spring-security-web:4.2.4.RELEASE'
-    implementation 'org.springframework.security:spring-security-config:4.2.4.RELEASE'
+    implementation 'org.springframework.security:spring-security-core:4.2.9.RELEASE'
+    implementation 'org.springframework.security:spring-security-web:4.2.9.RELEASE'
+    implementation 'org.springframework.security:spring-security-config:4.2.9.RELEASE'
     implementation 'org.slf4j:slf4j-api:1.7.25'
     compileOnly 'javax.servlet:servlet-api:2.5'
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testImplementation 'org.mockito:mockito-core:2.13.0'
-    testImplementation 'javax.servlet:servlet-api:2.5'
+    testImplementation 'org.mockito:mockito-core:2.23.0'
+    testCompile 'javax.servlet:servlet-api:2.5'
 }
 
 jacocoTestReport {
