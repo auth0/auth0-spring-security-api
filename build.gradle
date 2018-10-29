@@ -19,7 +19,3 @@ allprojects {
         jcenter()
     }
 }
-
-wrapper {
-    gradleVersion = '4.10.2'
-}
