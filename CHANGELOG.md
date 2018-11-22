@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.0](https://github.com/auth0/auth0-spring-security-api/tree/1.2.0) (2018-11-22)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.1.0...1.2.0)
+
+**Security**
+- Use latest Gradle wrapper and Bump dependencies [\#4](https://github.com/auth0/auth0-spring-security-api/pull/4) ([napstr](https://github.com/napstr))
+
 ## [1.1.0](https://github.com/auth0/auth0-spring-security-api/tree/1.1.0) (2018-05-31)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.0.0...1.1.0)
 
