@@ -1,6 +1,6 @@
 apply plugin: 'idea'
-apply plugin: "com.auth0.gradle.oss-library.java"
-apply plugin: "jacoco"
+apply plugin: 'com.auth0.gradle.oss-library.java'
+apply plugin: 'jacoco'
 
 oss {
     name 'auth0-spring-security-api'
