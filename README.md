@@ -1,6 +1,6 @@
 # Auth0 Spring Security for API
 
-[![Build][travis-ci-badge]][travis-ci-url]
+[![CircleCI][circle-ci-badge]][circle-ci-url]
 [![MIT][mit-badge]][mit-url]
 [![Maven][maven-badge]][maven-url]
 [![Download][jcenter-badge]][jcenter-url]
@@ -132,13 +132,13 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 
 <!-- Vars -->
 
-[travis-ci-badge]: https://travis-ci.org/auth0/auth0-spring-security.svg?branch=master
-[travis-ci-url]: https://travis-ci.org/auth0/auth0-spring-security
-[mit-badge]: http://img.shields.io/:license-mit-blue.svg?style=flat
+[circle-ci-badge]: https://img.shields.io/circleci/project/github/auth0/auth0-spring-security-api.svg?style=flat-square
+[circle-ci-url]: https://circleci.com/gh/auth0/auth0-spring-security-api/tree/master
+[mit-badge]: http://img.shields.io/:license-mit-blue.svg?style=flat-square
 [mit-url]: https://raw.githubusercontent.com/auth0/auth0-java/master/LICENSE
-[maven-badge]: https://img.shields.io/maven-central/v/com.auth0/auth0-spring-security-api.svg
+[maven-badge]: https://img.shields.io/maven-central/v/com.auth0/auth0-spring-security-api.svg?style=flat-square
 [maven-url]: http://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.auth0%22%20AND%20a%3A%22auth0-spring-security-api%22
-[jcenter-badge]: https://api.bintray.com/packages/auth0/java/auth0-spring-security-api/images/download.svg
+[jcenter-badge]: https://api.bintray.com/packages/auth0/java/auth0-spring-security-api/images/download.svg?style=flat-square
 [jcenter-url]: https://bintray.com/auth0/java/auth0-spring-security-api/_latestVersion
 [codecov-badge]: https://codecov.io/gh/auth0/auth0-spring-security-api/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/auth0/auth0-spring-security-api
