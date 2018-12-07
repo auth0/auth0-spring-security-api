@@ -37,6 +37,23 @@ public class JwtWebSecurityConfigurer {
     }
 
     /**
+     * Configures application authorization for JWT signed with RS256.
+     * Will try to validate the token using the public key downloaded from "$issuer/.well-known/jwks.json"
+     * and matched by the value of {@code kid} of the JWT header
+     * @param audience identifier of the API and must match the {@code aud} value in the token
+     * @param issuer of the token for this API and must match the {@code iss} value in the token
+     * @param leeway configurable leeway value
+     * @return JwtWebSecurityConfigurer for further configuration
+     */
+    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
+    public static JwtWebSecurityConfigurer forRS256(String audience, String issuer, long leeway) {
+        final JwkProvider jwkProvider = new JwkProviderBuilder(issuer).build();
+        JwtAuthenticationProvider providerWithLeeway = new JwtAuthenticationProvider(jwkProvider, issuer, audience)
+                .withJwtVerifierLeeway(leeway);
+        return new JwtWebSecurityConfigurer(audience, issuer, providerWithLeeway);
+    }
+
+    /**
      * Configures application authorization for JWT signed with RS256
      * Will try to validate the token using the public key downloaded from "$issuer/.well-known/jwks.json"
      * and matched by the value of {@code kid} of the JWT header

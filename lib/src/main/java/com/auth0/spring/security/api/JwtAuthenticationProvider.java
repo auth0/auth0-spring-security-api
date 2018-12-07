@@ -6,6 +6,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.spring.security.api.authentication.JwtAuthentication;
+import com.google.common.annotations.VisibleForTesting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -72,6 +73,11 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     public JwtAuthenticationProvider withJwtVerifierLeeway(long leeway) {
         this.leeway = leeway;
         return this;
+    }
+
+    @VisibleForTesting
+    long getLeeway() {
+        return leeway;
     }
 
     private JWTVerifier jwtVerifier(JwtAuthentication authentication) throws AuthenticationException {
