@@ -16,10 +16,15 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
 
     private final DecodedJWT decoded;
     private boolean authenticated;
+    private final List<String> authorityClaims;
+    private final AuthenticationJsonWebTokenFactory tokenFactory;
 
-    AuthenticationJsonWebToken(String token, JWTVerifier verifier) throws JWTVerificationException {
+    AuthenticationJsonWebToken(String token, JWTVerifier verifier, List<String> authorityClaims,
+                               AuthenticationJsonWebTokenFactory tokenFactory) throws JWTVerificationException {
         this.decoded = verifier == null ? JWT.decode(token) : verifier.verify(token);
         this.authenticated = verifier != null;
+        this.authorityClaims = authorityClaims;
+        this.tokenFactory = tokenFactory;
     }
 
     @Override
@@ -34,22 +39,34 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
 
     @Override
     public Authentication verify(JWTVerifier verifier) throws JWTVerificationException {
-        return new AuthenticationJsonWebToken(getToken(), verifier);
+        return tokenFactory.usingTokenAndVerifier(getToken(), verifier);
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String scope = decoded.getClaim("scope").asString();
-        if (scope == null || scope.trim().isEmpty()) {
-            return new ArrayList<>();
-        }
-        final String[] scopes = scope.split(" ");
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>(scopes.length);
-        for (String value : scopes) {
-            authorities.add(new SimpleGrantedAuthority(value));
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        for (String authorityClaim: authorityClaims) {
+            // try as string first
+            String[] scopes = getAuthorityClaims(authorityClaim);
+            if (scopes != null) {
+                for (String value : scopes) {
+                    authorities.add(new SimpleGrantedAuthority(value));
+                }
+            }
+
+
         }
         return authorities;
     }
+    public String[] getAuthorityClaims(String authorityName) {
+        String authorityClaim = decoded.getClaim(authorityName).asString();
+        if (authorityClaim == null || authorityClaim.trim().isEmpty()) {
+            return decoded.getClaim(authorityName).asArray(String.class);
+        } else {
+            return authorityClaim.split(" ");
+        }
+    }
+
 
     @Override
     public Object getCredentials() {

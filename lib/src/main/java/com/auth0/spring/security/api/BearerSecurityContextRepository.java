@@ -1,5 +1,6 @@
 package com.auth0.spring.security.api;
 
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebTokenFactory;
 import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,12 +15,19 @@ import javax.servlet.http.HttpServletResponse;
 
 public class BearerSecurityContextRepository implements SecurityContextRepository {
     private final static Logger logger = LoggerFactory.getLogger(BearerSecurityContextRepository.class);
+    private final AuthenticationJsonWebTokenFactory tokenFactory;
+    public BearerSecurityContextRepository() {
+        this(new AuthenticationJsonWebTokenFactory());
+    }
+    public BearerSecurityContextRepository(AuthenticationJsonWebTokenFactory tokenFactory) {
+        this.tokenFactory = tokenFactory;
+    }
 
     @Override
     public SecurityContext loadContext(HttpRequestResponseHolder requestResponseHolder) {
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         String token = tokenFromRequest(requestResponseHolder.getRequest());
-        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+        Authentication authentication = tokenFactory.usingToken(token);
         if (authentication != null) {
             context.setAuthentication(authentication);
             logger.debug("Found bearer token in request. Saving it in SecurityContext");

@@ -12,15 +12,18 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class PreAuthenticatedAuthenticationJsonWebToken implements Authentication, JwtAuthentication {
 
     private static Logger logger = LoggerFactory.getLogger(PreAuthenticatedAuthenticationJsonWebToken.class);
 
     private final DecodedJWT token;
+    private final AuthenticationJsonWebTokenFactory tokenFactory;
 
-    PreAuthenticatedAuthenticationJsonWebToken(DecodedJWT token) {
+    PreAuthenticatedAuthenticationJsonWebToken(DecodedJWT token, AuthenticationJsonWebTokenFactory tokenFactory) {
         this.token = token;
+        this.tokenFactory = tokenFactory;
     }
 
     @Override
@@ -58,19 +61,6 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
         return token.getSubject();
     }
 
-    public static PreAuthenticatedAuthenticationJsonWebToken usingToken(String token) {
-        if (token == null) {
-            logger.debug("No token was provided to build {}", PreAuthenticatedAuthenticationJsonWebToken.class.getName());
-            return null;
-        }
-        try {
-            DecodedJWT jwt = JWT.decode(token);
-            return new PreAuthenticatedAuthenticationJsonWebToken(jwt);
-        } catch (JWTDecodeException e) {
-            logger.debug("Failed to decode token as jwt", e);
-            return null;
-        }
-    }
 
     @Override
     public String getToken() {
@@ -84,6 +74,6 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
 
     @Override
     public Authentication verify(JWTVerifier verifier) throws JWTVerificationException {
-        return new AuthenticationJsonWebToken(token.getToken(), verifier);
+        return tokenFactory.usingTokenAndVerifier(token.getToken(), verifier);
     }
 }
