@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class PreAuthenticatedAuthenticationJsonWebToken implements Authentication, JwtAuthentication {
+public class PreAuthenticatedAuthenticationJsonWebToken implements JwtAuthentication {
 
     private static Logger logger = LoggerFactory.getLogger(PreAuthenticatedAuthenticationJsonWebToken.class);
 

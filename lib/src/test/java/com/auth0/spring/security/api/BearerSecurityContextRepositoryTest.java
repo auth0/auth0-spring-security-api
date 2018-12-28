@@ -3,8 +3,11 @@ package com.auth0.spring.security.api;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.auth0.spring.security.api.authentication.AuthenticationJsonWebTokenFactory;
+import com.auth0.spring.security.api.authentication.JwtAuthentication;
 import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.junit.Test;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 
@@ -91,5 +94,24 @@ public class BearerSecurityContextRepositoryTest {
         assertThat(context.getAuthentication(), is(instanceOf(PreAuthenticatedAuthenticationJsonWebToken.class)));
         assertThat(context.getAuthentication().isAuthenticated(), is(false));
     }
+
+    @Test
+    public void shouldLoadContextWithCustomBearerSecurityContext() throws Exception {
+        String token = JWT.create()
+                .sign(Algorithm.HMAC256("secret"));
+        AuthenticationJsonWebTokenFactory tokenFactory = mock(AuthenticationJsonWebTokenFactory.class);
+        JwtAuthentication mockAuthentication = mock(JwtAuthentication.class);
+        when(tokenFactory.usingToken(token)).thenReturn(mockAuthentication);
+        BearerSecurityContextRepository repository = new BearerSecurityContextRepository(tokenFactory);
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpRequestResponseHolder holder = new HttpRequestResponseHolder(request, null);
+        when(request.getHeader("Authorization")).thenReturn("Bearer " + token);
+
+        SecurityContext context = repository.loadContext(holder);
+        assertThat(context, is(notNullValue()));
+        assertThat(context.getAuthentication(), is(mockAuthentication));
+    }
+
+
 
 }

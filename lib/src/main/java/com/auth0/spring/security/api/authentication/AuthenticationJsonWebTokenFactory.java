@@ -23,7 +23,7 @@ public class AuthenticationJsonWebTokenFactory {
         this.authorityClaims = authorityClaims;
     }
 
-    public PreAuthenticatedAuthenticationJsonWebToken usingToken(String token) {
+    public JwtAuthentication usingToken(String token) {
         if (token == null) {
             logger.debug("No token was provided to build {}", PreAuthenticatedAuthenticationJsonWebToken.class.getName());
             return null;
@@ -38,7 +38,7 @@ public class AuthenticationJsonWebTokenFactory {
     }
 
 
-    public AuthenticationJsonWebToken usingTokenAndVerifier(String token, JWTVerifier verifier) {
+    public JwtAuthentication usingTokenAndVerifier(String token, JWTVerifier verifier) {
         return new AuthenticationJsonWebToken(token, verifier, authorityClaims, this);
     }
 }

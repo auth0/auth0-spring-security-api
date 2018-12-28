@@ -4,7 +4,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import org.springframework.security.core.Authentication;
 
-public interface JwtAuthentication {
+public interface JwtAuthentication extends Authentication {
 
     String getToken();
 

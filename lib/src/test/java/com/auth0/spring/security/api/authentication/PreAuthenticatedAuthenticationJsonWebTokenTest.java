@@ -38,7 +38,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken) tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.isAuthenticated(), is(false));
     }
@@ -49,7 +49,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
 
         assertThat(auth.isAuthenticated(), is(false));
         auth.setAuthenticated(true);
@@ -63,7 +63,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withHeader(keyIdHeader)
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is("key-id"));
     }
@@ -73,7 +73,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is(nullValue()));
     }
@@ -84,7 +84,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getToken(), is(token));
     }
@@ -95,7 +95,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getCredentials(), is(notNullValue()));
         assertThat(auth.getCredentials(), is(instanceOf(String.class)));
@@ -108,7 +108,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getDetails(), is(notNullValue()));
         assertThat(auth.getDetails(), is(instanceOf(DecodedJWT.class)));
@@ -120,7 +120,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(notNullValue()));
         assertThat(auth.getPrincipal(), is(instanceOf(String.class)));
@@ -132,7 +132,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(nullValue()));
     }
@@ -143,7 +143,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(notNullValue()));
         assertThat(auth.getName(), is(instanceOf(String.class)));
@@ -155,7 +155,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(nullValue()));
     }
@@ -165,7 +165,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
@@ -177,7 +177,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
                 .withClaim("scope", "read:users add:users")
                 .sign(hmacAlgorithm);
 
-        PreAuthenticatedAuthenticationJsonWebToken auth = tokenFactory.usingToken(token);
+        PreAuthenticatedAuthenticationJsonWebToken auth = (PreAuthenticatedAuthenticationJsonWebToken)tokenFactory.usingToken(token);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));

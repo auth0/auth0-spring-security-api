@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class AuthenticationJsonWebToken implements Authentication, JwtAuthentication {
+public class AuthenticationJsonWebToken implements JwtAuthentication {
 
     private final DecodedJWT decoded;
     private boolean authenticated;

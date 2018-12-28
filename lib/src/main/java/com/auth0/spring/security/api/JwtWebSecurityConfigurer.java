@@ -96,16 +96,31 @@ public class JwtWebSecurityConfigurer {
      */
     @SuppressWarnings("unused")
     public HttpSecurity configure(HttpSecurity http) throws Exception {
+        return this.configure(http, new BearerSecurityContextRepository(), new JwtAuthenticationEntryPoint());
+    }
+
+    /**
+     * Further configure the {@link HttpSecurity} object with some sensible defaults
+     * by registering objects to obtain a bearer token from a request.
+     * @param http configuration for Spring
+     * @param bearerSecurity configuration for Bearer Tokens
+     * @param http configuration for entry point
+     * @return the http configuration for further customizations
+     * @throws Exception
+     */
+    @SuppressWarnings("unused")
+    public HttpSecurity configure(HttpSecurity http, BearerSecurityContextRepository bearerSecurity, JwtAuthenticationEntryPoint entryPoint) throws Exception {
         return http
                 .authenticationProvider(provider)
                 .securityContext()
-                .securityContextRepository(new BearerSecurityContextRepository())
+                .securityContextRepository(bearerSecurity)
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                .authenticationEntryPoint(entryPoint)
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
     }
+
 }

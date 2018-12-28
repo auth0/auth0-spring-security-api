@@ -5,6 +5,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
+import com.google.common.collect.Lists;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.hamcrest.collection.IsEmptyCollection;
@@ -16,6 +17,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -41,7 +43,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.isAuthenticated(), is(true));
     }
@@ -51,7 +53,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.isAuthenticated(), is(true));
 
@@ -65,7 +67,7 @@ public class AuthenticationJsonWebTokenTest {
                 .sign(hmacAlgorithm);
 
         JWTVerifier verifier = JWT.require(hmacAlgorithm).build();
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.isAuthenticated(), is(true));
 
@@ -81,7 +83,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withHeader(keyIdHeader)
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is("key-id"));
     }
@@ -91,7 +93,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getKeyId(), is(nullValue()));
     }
@@ -102,7 +104,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getToken(), is(token));
     }
@@ -113,7 +115,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getCredentials(), is(notNullValue()));
         assertThat(auth.getCredentials(), is(instanceOf(String.class)));
@@ -126,7 +128,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withIssuer("auth0")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getDetails(), is(notNullValue()));
         assertThat(auth.getDetails(), is(instanceOf(DecodedJWT.class)));
@@ -138,7 +140,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth =tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(notNullValue()));
         assertThat(auth.getPrincipal(), is(instanceOf(String.class)));
@@ -150,7 +152,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getPrincipal(), is(nullValue()));
     }
@@ -161,7 +163,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withSubject("1234567890")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(notNullValue()));
         assertThat(auth.getName(), is(instanceOf(String.class)));
@@ -173,7 +175,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getName(), is(nullValue()));
     }
@@ -183,7 +185,7 @@ public class AuthenticationJsonWebTokenTest {
         String token = JWT.create()
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
@@ -195,7 +197,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withClaim("scope", "   ")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
@@ -207,7 +209,7 @@ public class AuthenticationJsonWebTokenTest {
                 .withClaim("scope", "auth0 auth10")
                 .sign(hmacAlgorithm);
 
-        AuthenticationJsonWebToken auth = tokenFactory.usingTokenAndVerifier(token,verifier);
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
         assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
@@ -217,5 +219,69 @@ public class AuthenticationJsonWebTokenTest {
         assertThat(authorities.get(0).getAuthority(), is("auth0"));
         assertThat(authorities.get(1), is(notNullValue()));
         assertThat(authorities.get(1).getAuthority(), is("auth10"));
+    }
+    @Test
+    public void shouldIgnoreCustomClaimAsAuthoritiesByDefault() throws Exception {
+        String token = JWT.create()
+                .withArrayClaim("https://auth0.io/claims/roles", new String[]{"role1", "role2"})
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token, verifier);
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(0)));
+    }
+
+    @Test
+    public void shouldGetCustomClaimAsAuthorities() throws Exception {
+        String[] roles = new String[] {"role1", "role2"};
+        String customClaim = "https://auth0.io/claims/roles";
+
+        String token = JWT.create()
+                .withArrayClaim(customClaim, roles)
+                .sign(hmacAlgorithm);
+
+        // make a new tokenFactory
+        tokenFactory = new AuthenticationJsonWebTokenFactory(Collections.singletonList(customClaim));
+
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
+
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
+        assertThat(authorities.get(0), is(notNullValue()));
+        assertThat(authorities.get(0).getAuthority(), is(roles[0]));
+        assertThat(authorities.get(1), is(notNullValue()));
+        assertThat(authorities.get(1).getAuthority(), is(roles[1]));
+    }
+    @Test
+    public void shouldGetScopesAndCustomClaimAsAuthorities() throws Exception {
+        String[] roles = new String[] {"role1", "role2"};
+        String customClaim = "https://auth0.io/claims/roles";
+
+        String token = JWT.create()
+                .withArrayClaim(customClaim, roles)
+                .withClaim("scope", "auth0 auth10")
+                .sign(hmacAlgorithm);
+
+        tokenFactory = new AuthenticationJsonWebTokenFactory(Lists.newArrayList(AuthenticationJsonWebTokenFactory.DEFAULT_SCOPE, customClaim));
+
+        AuthenticationJsonWebToken auth = (AuthenticationJsonWebToken) tokenFactory.usingTokenAndVerifier(token,verifier);
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(4)));
+
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
+        assertThat(authorities.get(0), is(notNullValue()));
+        assertThat(authorities.get(0).getAuthority(), is("auth0"));
+        assertThat(authorities.get(1), is(notNullValue()));
+        assertThat(authorities.get(1).getAuthority(), is("auth10"));
+        assertThat(authorities.get(2), is(notNullValue()));
+        assertThat(authorities.get(2).getAuthority(), is(roles[0]));
+        assertThat(authorities.get(3), is(notNullValue()));
+        assertThat(authorities.get(3).getAuthority(), is(roles[1]));
     }
 }
