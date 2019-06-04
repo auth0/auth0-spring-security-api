@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.3](https://github.com/auth0/auth0-spring-security-api/tree/1.2.3) (2019-06-04)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.2...1.2.3)
+
+**Fixed**
+- Rollback to fixed dependencies versions [\#28](https://github.com/auth0/auth0-spring-security-api/pull/28) ([lbalmaceda](https://github.com/lbalmaceda))
+
 ## [1.2.2](https://github.com/auth0/auth0-spring-security-api/tree/1.2.2) (2019-05-23)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.1...1.2.2)
 
