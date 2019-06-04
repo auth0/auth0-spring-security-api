@@ -31,8 +31,8 @@ compileJava {
 }
 
 dependencies {
-    implementation 'com.auth0:java-jwt:3.8.+'
-    implementation 'com.auth0:jwks-rsa:0.8.+'
+    implementation 'com.auth0:java-jwt:3.8.1'
+    implementation 'com.auth0:jwks-rsa:0.8.2'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.9'
     implementation 'commons-codec:commons-codec:1.12'
     implementation 'org.springframework.security:spring-security-core:4.2.12.RELEASE'
