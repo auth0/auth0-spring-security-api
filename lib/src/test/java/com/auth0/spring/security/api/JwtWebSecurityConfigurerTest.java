@@ -15,7 +15,8 @@ public class JwtWebSecurityConfigurerTest {
 
         assertThat(configurer, is(notNullValue()));
         assertThat(configurer.audience, is("audience"));
-        assertThat(configurer.issuer, is("issuer"));
+        assertThat(configurer.issuers, arrayWithSize(1));
+        assertThat(configurer.issuers, arrayContaining("issuer"));
         assertThat(configurer.provider, is(notNullValue()));
         assertThat(configurer.provider, is(instanceOf(JwtAuthenticationProvider.class)));
     }
@@ -27,7 +28,8 @@ public class JwtWebSecurityConfigurerTest {
 
         assertThat(configurer, is(notNullValue()));
         assertThat(configurer.audience, is("audience"));
-        assertThat(configurer.issuer, is("issuer"));
+        assertThat(configurer.issuers, arrayWithSize(1));
+        assertThat(configurer.issuers, arrayContaining("issuer"));
         assertThat(configurer.provider, is(notNullValue()));
         assertThat(configurer.provider, is(provider));
     }
@@ -38,7 +40,8 @@ public class JwtWebSecurityConfigurerTest {
 
         assertThat(configurer, is(notNullValue()));
         assertThat(configurer.audience, is("audience"));
-        assertThat(configurer.issuer, is("issuer"));
+        assertThat(configurer.issuers, arrayWithSize(1));
+        assertThat(configurer.issuers, arrayContaining("issuer"));
         assertThat(configurer.provider, is(notNullValue()));
         assertThat(configurer.provider, is(instanceOf(JwtAuthenticationProvider.class)));
     }
@@ -49,7 +52,20 @@ public class JwtWebSecurityConfigurerTest {
 
         assertThat(configurer, is(notNullValue()));
         assertThat(configurer.audience, is("audience"));
-        assertThat(configurer.issuer, is("issuer"));
+        assertThat(configurer.issuers, arrayWithSize(1));
+        assertThat(configurer.issuers, arrayContaining("issuer"));
+        assertThat(configurer.provider, is(notNullValue()));
+        assertThat(configurer.provider, is(instanceOf(JwtAuthenticationProvider.class)));
+    }
+
+    @Test
+    public void shouldCreateHS256ConfigurerWithSeveralIssuers() throws Exception {
+        JwtWebSecurityConfigurer configurer = JwtWebSecurityConfigurer.forHS256("audience", new String[]{"issuer1", "issuer2"}, "secret".getBytes());
+
+        assertThat(configurer, is(notNullValue()));
+        assertThat(configurer.audience, is("audience"));
+        assertThat(configurer.issuers, arrayWithSize(2));
+        assertThat(configurer.issuers, arrayContaining("issuer1", "issuer2"));
         assertThat(configurer.provider, is(notNullValue()));
         assertThat(configurer.provider, is(instanceOf(JwtAuthenticationProvider.class)));
     }
@@ -61,7 +77,8 @@ public class JwtWebSecurityConfigurerTest {
 
         assertThat(configurer, is(notNullValue()));
         assertThat(configurer.audience, is("audience"));
-        assertThat(configurer.issuer, is("issuer"));
+        assertThat(configurer.issuers, arrayWithSize(1));
+        assertThat(configurer.issuers, arrayContaining("issuer"));
         assertThat(configurer.provider, is(notNullValue()));
         assertThat(configurer.provider, is(provider));
     }

@@ -53,6 +53,14 @@ public class JwtAuthenticationProviderTest {
     }
 
     @Test
+    public void shouldCreateUsingJWKProviderAndIssuerIsNull() throws Exception {
+        JwkProvider jwkProvider = mock(JwkProvider.class);
+        String issuer = null;
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, issuer, "test-audience");
+
+        assertThat(provider, is(notNullValue()));
+    }
+    @Test
     public void shouldSupportJwkAuthentication() throws Exception {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "test-issuer", "test-audience");
 
@@ -115,6 +123,21 @@ public class JwtAuthenticationProviderTest {
     @Test
     public void shouldFailToAuthenticateUsingSecretIfIssuerClaimDoesNotMatch() throws Exception {
         JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), "test-issuer", "test-audience");
+        String token = JWT.create()
+                .withAudience("test-audience")
+                .withIssuer("some-issuer")
+                .sign(Algorithm.HMAC256("secret"));
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        exception.expect(BadCredentialsException.class);
+        exception.expectMessage("Not a valid token");
+        exception.expectCause(Matchers.<Throwable>instanceOf(InvalidClaimException.class));
+        provider.authenticate(authentication);
+    }
+
+    @Test
+    public void shouldFailToAuthenticateUsingSecretIfIssuerClaimDoesNotMatchIssuersArray() throws Exception {
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider("secret".getBytes(), new String[]{"test-issuer1", "test-issuer2"}, "test-audience");
         String token = JWT.create()
                 .withAudience("test-audience")
                 .withIssuer("some-issuer")
@@ -319,6 +342,30 @@ public class JwtAuthenticationProviderTest {
     }
 
     @Test
+    public void shouldFailToAuthenticateUsingJWKIfIssuerClaimDoesNotMatchAllowedIssuers() throws Exception {
+        Jwk jwk = mock(Jwk.class);
+        JwkProvider jwkProvider = mock(JwkProvider.class);
+
+        KeyPair keyPair = RSAKeyPair();
+        when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
+        when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, new String[]{"test-issuer1", "test-issuer2"}, "test-audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
+        String token = JWT.create()
+                .withAudience("test-audience")
+                .withIssuer("some-issuer")
+                .withHeader(keyIdHeader)
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
+
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        exception.expect(BadCredentialsException.class);
+        exception.expectMessage("Not a valid token");
+        exception.expectCause(Matchers.<Throwable>instanceOf(InvalidClaimException.class));
+        provider.authenticate(authentication);
+    }
+
+    @Test
     public void shouldFailToAuthenticateUsingJWKIfAudienceClaimDoesNotMatch() throws Exception {
         Jwk jwk = mock(Jwk.class);
         JwkProvider jwkProvider = mock(JwkProvider.class);
@@ -478,6 +525,30 @@ public class JwtAuthenticationProviderTest {
         String token = JWT.create()
                 .withAudience("test-audience")
                 .withIssuer("test-issuer")
+                .withHeader(keyIdHeader)
+                .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
+
+        Authentication authentication = PreAuthenticatedAuthenticationJsonWebToken.usingToken(token);
+
+        Authentication result = provider.authenticate(authentication);
+
+        assertThat(result, is(notNullValue()));
+        assertThat(result, is(not(equalTo(authentication))));
+    }
+
+    @Test
+    public void shouldAuthenticateUsingJWKAndSeveralAllowedIssuers() throws Exception {
+        Jwk jwk = mock(Jwk.class);
+        JwkProvider jwkProvider = mock(JwkProvider.class);
+
+        KeyPair keyPair = RSAKeyPair();
+        when(jwkProvider.get(eq("key-id"))).thenReturn(jwk);
+        when(jwk.getPublicKey()).thenReturn(keyPair.getPublic());
+        JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, new String[]{"test-issuer1", "test-issuer2"}, "test-audience");
+        Map<String, Object> keyIdHeader = Collections.singletonMap("kid", (Object) "key-id");
+        String token = JWT.create()
+                .withAudience("test-audience")
+                .withIssuer("test-issuer2")
                 .withHeader(keyIdHeader)
                 .sign(Algorithm.RSA256(null, (RSAPrivateKey) keyPair.getPrivate()));
 
