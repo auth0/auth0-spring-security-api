@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.4](https://github.com/auth0/auth0-spring-security-api/tree/1.2.4) (2019-07-03)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.3...1.2.4)
+
+**Security**
+- Bump dependency versions [\#31](https://github.com/auth0/auth0-spring-security-api/pull/31) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.2.3](https://github.com/auth0/auth0-spring-security-api/tree/1.2.3) (2019-06-04)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.2...1.2.3)
 
