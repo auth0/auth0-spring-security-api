@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.5](https://github.com/auth0/auth0-spring-security-api/tree/1.2.5) (2019-08-15)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.4...1.2.5)
+
+**Security**
+- Update jackson-databind to address CVE-2019-14379 and CVE-2019-14439 [\#33](https://github.com/auth0/auth0-spring-security-api/pull/33) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.2.4](https://github.com/auth0/auth0-spring-security-api/tree/1.2.4) (2019-07-03)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.3...1.2.4)
 
