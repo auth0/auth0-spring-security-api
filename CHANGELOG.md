@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.2.6](https://github.com/auth0/auth0-spring-security-api/tree/1.2.6) (2019-09-26)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.5...1.2.6)
+
+**Security**
+- Update dependencies to address CVE [\#37](https://github.com/auth0/auth0-spring-security-api/pull/37) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.2.5](https://github.com/auth0/auth0-spring-security-api/tree/1.2.5) (2019-08-15)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.4...1.2.5)
 
