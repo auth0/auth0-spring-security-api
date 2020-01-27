@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
 import java.security.interfaces.RSAPublicKey;
+import java.util.List;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
@@ -24,6 +25,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private final String issuer;
     private final String audience;
     private final JwkProvider jwkProvider;
+
+    private List<String> customClaims;
 
     private long leeway = 0;
 
@@ -54,7 +57,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
         JwtAuthentication jwt = (JwtAuthentication) authentication;
         try {
-            final Authentication jwtAuth = jwt.verify(jwtVerifier(jwt));
+            final Authentication jwtAuth = jwt.verify(jwtVerifier(jwt), customClaims);
             logger.info("Authenticated with jwt with scopes {}", jwtAuth.getAuthorities());
             return jwtAuth;
         } catch (JWTVerificationException e) {
@@ -73,6 +76,20 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         this.leeway = leeway;
         return this;
     }
+
+    /**
+     * Specify custom claims to be extracted to {@link org.springframework.security.core.GrantedAuthority}.
+     * The authority name will be the name of the claim, followed by an underscore, then the claim's value.
+     *
+     * @param claims the name of the claims to extract authorities from.
+     * @return this same provider instance.
+     */
+    @SuppressWarnings("unused")
+    public JwtAuthenticationProvider withCustomClaimAuthorities(List<String> claims) {
+        this.customClaims = claims;
+        return this;
+    }
+
 
     private JWTVerifier jwtVerifier(JwtAuthentication authentication) throws AuthenticationException {
         if (secret != null) {

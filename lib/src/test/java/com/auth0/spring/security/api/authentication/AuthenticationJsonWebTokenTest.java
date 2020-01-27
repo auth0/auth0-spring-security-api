@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsCollectionWithSize;
 import org.hamcrest.collection.IsEmptyCollection;
@@ -15,6 +14,7 @@ import org.junit.rules.ExpectedException;
 import org.springframework.security.core.GrantedAuthority;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
@@ -208,13 +208,121 @@ public class AuthenticationJsonWebTokenTest {
 
         AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier);
         assertThat(auth, is(notNullValue()));
+
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        assertThat(authorities, is(notNullValue()));
+        assertThat(authorities, is(IsCollectionWithSize.hasSize(4)));
+        assertThat(authorities, containsInAnyOrder(
+                hasProperty("authority", is("auth0")),
+                hasProperty("authority", is("auth10")),
+                hasProperty("authority", is("SCOPE_auth0")),
+                hasProperty("authority", is("SCOPE_auth10"))
+        ));
+    }
+
+    @Test
+    public void shouldGetEmptyAuthoritiesOnEmptyPermissionsClaim() throws Exception {
+        String token = JWT.create()
+                .withArrayClaim("permissions", new String[]{})
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier);
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsEmptyCollection.empty()));
+    }
+
+    @Test
+    public void shouldGetPermissionsAsAuthorities() throws Exception {
+        String[] permissionsClaim = {"read:permission", "write:permission"};
+        String token = JWT.create()
+                .withArrayClaim("permissions", permissionsClaim)
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier);
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
+
+        Collection<? extends GrantedAuthority> authorities = auth.getAuthorities();
+        assertThat(authorities, IsCollectionWithSize.hasSize(2));
+        assertThat(authorities, containsInAnyOrder(
+                hasProperty("authority", is("PERMISSION_" + permissionsClaim[0])),
+                hasProperty("authority", is("PERMISSION_" + permissionsClaim[1]))
+        ));
+    }
+
+    @Test
+    public void shouldGetCustomArrayClaimsAsAuthorities() throws Exception {
+        String[] customClaims = {"write:admin", "read:admin"};
+        String token = JWT.create()
+                .withArrayClaim("customArrayClaim", customClaims)
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier, Collections.singletonList("customArrayClaim"));
+        assertThat(auth, is(notNullValue()));
         assertThat(auth.getAuthorities(), is(notNullValue()));
         assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
 
         ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
         assertThat(authorities.get(0), is(notNullValue()));
-        assertThat(authorities.get(0).getAuthority(), is("auth0"));
+        assertThat(authorities.get(0).getAuthority(), is("customArrayClaim_" + customClaims[0]));
         assertThat(authorities.get(1), is(notNullValue()));
-        assertThat(authorities.get(1).getAuthority(), is("auth10"));
+        assertThat(authorities.get(1).getAuthority(), is("customArrayClaim_" + customClaims[1]));
+    }
+
+    @Test
+    public void shouldGetCustomStringClaimsAsAuthorities() throws Exception {
+        String customClaim = "admin";
+        String token = JWT.create()
+                .withClaim("customStringClaim", customClaim)
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier, Collections.singletonList("customStringClaim"));
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(1)));
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
+        assertThat(authorities.get(0), is(notNullValue()));
+        assertThat(authorities.get(0).getAuthority(), is("customStringClaim_" + customClaim));
+    }
+
+    @Test
+    public void shouldGetCustomStringClaimsMultipleAsAuthorities() throws Exception {
+        String customClaim = "admin:write admin:read";
+        String token = JWT.create()
+                .withClaim("customStringClaim", customClaim)
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier, Collections.singletonList("customStringClaim"));
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
+        assertThat(authorities.get(0), is(notNullValue()));
+        assertThat(authorities.get(0).getAuthority(), is("customStringClaim_admin:write"));
+        assertThat(authorities.get(1), is(notNullValue()));
+        assertThat(authorities.get(1).getAuthority(), is("customStringClaim_admin:read"));
+    }
+
+    @Test
+    public void shouldGetCustomArrayClaimsDifferentTypesAsAuthorities() throws Exception {
+        Long[] customClaims = {41L, 42L};
+        String token = JWT.create()
+                .withArrayClaim("customArrayClaim", customClaims)
+                .sign(hmacAlgorithm);
+
+        AuthenticationJsonWebToken auth = new AuthenticationJsonWebToken(token, verifier, Collections.singletonList("customArrayClaim"));
+        assertThat(auth, is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(notNullValue()));
+        assertThat(auth.getAuthorities(), is(IsCollectionWithSize.hasSize(2)));
+
+        ArrayList<GrantedAuthority> authorities = new ArrayList<>(auth.getAuthorities());
+        assertThat(authorities, containsInAnyOrder(
+                hasProperty("authority", is("customArrayClaim_" + customClaims[0])),
+                hasProperty("authority", is("customArrayClaim_" + customClaims[1]))
+        ));
     }
 }

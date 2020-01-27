@@ -30,7 +30,7 @@ implementation 'com.auth0:auth0-spring-security-api:1.2.6'
 
 ## Usage
 
-Inside a `WebSecurityConfigurerAdapter` you can configure your API to only accept `RS256` signed JWTs
+Inside a `WebSecurityConfigurerAdapter` you can configure your API to only accept `RS256` signed JWTs:
 
 ```java
 @EnableWebSecurity
@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-or for `HS256` signed JWTs
+or for `HS256` signed JWTs:
 
 ```java
 @EnableWebSecurity
@@ -65,20 +65,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 > If you need further customization (like a leeway for JWT verification) use the `JwtWebSecurityConfigurer` signatures which accept a `JwtAuthenticationProvider`.
 
 
-Then using Spring Security `HttpSecurity` you can specify which paths requires authentication
+Then using Spring Security `HttpSecurity` you can specify which paths requires authentication:
 
 ```java
     http.authorizeRequests()
         .antMatchers("/api/**").fullyAuthenticated();
 ```
 
-and you can even specify that the JWT should have a single or several scopes
+To restrict access based on the presence of a specific scope or permission claim, you can use the `hasAuthority` method.
+Scope and permissions claim values are prefixed with `SCOPE_` and `PERMISSION_`, respectively.
+
+To require a specific scope (`read:users` in the example below):
 
 ```java
     http.authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("SCOPE_read:users");
 ```
 
+To require a specific permission (`admin` in the example below):
+
+```java
+    http.authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/api/admin/**").hasAuthority("PERMISSION_admin");
+```
 
 `JwtWebSecurityConfigurer#configure(HttpSecurity)` also returns `HttpSecurity` so you can do the following:
 
@@ -93,10 +102,36 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .forRS256("YOUR_API_AUDIENCE", "YOUR_API_ISSUER")
                 .configure(http)
                 .authorizeRequests()
-                        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+                        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("SCOPE_read:users"
+                        .antMatchers(HttpMethod.GET, "/api/admin/**").hasAuthority("PERMISSION_admin"));
     }
 }
 ```
+
+If you would like to use custom claims to make authorization decisions, you can specify the claims by configuring a `JwtAuthenticationProvider`.
+Authorities will be named using the claim name, followed by an underscore, followed by the claim value.
+Custom claims are limited to string or array of string claim types.
+
+```java
+final JwkProvider jwkProvider = new JwkProviderBuilder(issuer).build();
+JwtAuthenticationProvider provider = new JwtAuthenticationProvider(jwkProvider, "YOUR_API_ISSUER", "YOUR_API_AUDIENCE")
+    .withCustomClaimAuthorities(Arrays.asList(
+            "https://acme.com/claims/role",
+            "https://acme.com/claims/role/favorite_color"));
+
+
+JwtWebSecurityConfigurer
+    .forRS256(apiAudience, issuer, provider)
+    .configure(http)
+    .authorizeRequests()
+    
+    // Only callers with the value of "manager" for the claim "https://acme.com/claims/role" are authorized
+    .antMatchers(HttpMethod.GET, "/api/custom-role").hasAuthority("https://acme.com/claims/role_manager")
+    
+    // Only callers with the value of "red" for the claim "https://acme.com/claims/role/favorite_color" are authorized
+    .antMatchers(HttpMethod.GET, "/api/favorite-color").hasAuthority("https://acme.com/claims/role/favorite_colors_red")
+```
+
 ## Sample
 
 Perhaps the easiest way to learn how to use this library (and quickly get started with a working app) is to study the [Auth0 Spring Security API Sample](https://github.com/auth0-samples/auth0-spring-security-api-sample/tree/v1) and its README.

@@ -12,6 +12,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 public class PreAuthenticatedAuthenticationJsonWebToken implements Authentication, JwtAuthentication {
 
@@ -86,4 +87,10 @@ public class PreAuthenticatedAuthenticationJsonWebToken implements Authenticatio
     public Authentication verify(JWTVerifier verifier) throws JWTVerificationException {
         return new AuthenticationJsonWebToken(token.getToken(), verifier);
     }
+
+    @Override
+    public Authentication verify(JWTVerifier verifier, List<String> customClaims) throws JWTVerificationException {
+        return new AuthenticationJsonWebToken(token.getToken(), verifier, customClaims);
+    }
+
 }
