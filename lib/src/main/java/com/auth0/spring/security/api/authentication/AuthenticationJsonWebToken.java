@@ -8,11 +8,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class AuthenticationJsonWebToken implements Authentication, JwtAuthentication {
+
+    private final static String SCOPE_AUTHORITY_PREFIX = "SCOPE_";
+    private final static String PERMISSION_AUTHORITY_PREFIX = "PERMISSION_";
 
     private final DecodedJWT decoded;
     private boolean authenticated;
@@ -39,15 +40,13 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        String scope = decoded.getClaim("scope").asString();
-        if (scope == null || scope.trim().isEmpty()) {
-            return new ArrayList<>();
-        }
-        final String[] scopes = scope.split(" ");
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>(scopes.length);
-        for (String value : scopes) {
-            authorities.add(new SimpleGrantedAuthority(value));
-        }
+        List<SimpleGrantedAuthority> scopes = getScopeAuthorities();
+        List<SimpleGrantedAuthority> permissions = getPermissionAuthorities();
+
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        authorities.addAll(scopes);
+        authorities.addAll(permissions);
+
         return authorities;
     }
 
@@ -82,5 +81,35 @@ public class AuthenticationJsonWebToken implements Authentication, JwtAuthentica
     @Override
     public String getName() {
         return decoded.getSubject();
+    }
+
+    private List<SimpleGrantedAuthority> getScopeAuthorities() {
+        String scope = decoded.getClaim("scope").asString();
+        if (scope == null || scope.trim().isEmpty()) {
+            return Collections.emptyList();
+        }
+        final String[] scopes = scope.split(" ");
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>(scopes.length * 2);
+        for (String value : scopes) {
+            // For backwards-compatibility, create authority without scope prefix
+            authorities.add(new SimpleGrantedAuthority(value));
+            authorities.add(new SimpleGrantedAuthority(SCOPE_AUTHORITY_PREFIX + value));
+        }
+        return authorities;
+    }
+
+    private List<SimpleGrantedAuthority> getPermissionAuthorities() {
+        String[] permissions = decoded.getClaim("permissions").asArray(String.class);
+
+        if (permissions == null || permissions.length == 0) {
+            return Collections.emptyList();
+        }
+
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>(permissions.length);
+        for (String value : permissions) {
+            authorities.add(new SimpleGrantedAuthority(PERMISSION_AUTHORITY_PREFIX + value));
+        }
+
+        return authorities;
     }
 }
