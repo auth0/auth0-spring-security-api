@@ -30,21 +30,23 @@ compileJava {
     targetCompatibility '1.7'
 }
 
-dependencies {
-    implementation 'com.auth0:java-jwt:3.8.3'
-    implementation 'com.auth0:jwks-rsa:0.9.0'
-    implementation 'com.fasterxml.jackson.core:jackson-databind:2.10.0.pr3'
-    implementation 'commons-codec:commons-codec:1.12'
-    implementation 'org.springframework.security:spring-security-core:4.2.13.RELEASE'
-    implementation 'org.springframework.security:spring-security-web:4.2.13.RELEASE'
-    implementation 'org.springframework.security:spring-security-config:4.2.13.RELEASE'
-    implementation 'org.slf4j:slf4j-api:1.7.26'
-    compileOnly 'javax.servlet:servlet-api:2.5'
+ext.springSecurityVersion = '4.2.15.RELEASE'
 
-    testImplementation 'junit:junit:4.12'
-    testImplementation 'org.hamcrest:java-hamcrest:2.0.0.0'
-    testImplementation 'org.mockito:mockito-core:2.28.2'
-    testCompile 'javax.servlet:servlet-api:2.5'
+dependencies {
+    api "com.auth0:java-jwt:3.10.2"
+    api "com.auth0:jwks-rsa:0.11.0"
+    api "org.springframework.security:spring-security-core:${springSecurityVersion}"
+    api "org.springframework.security:spring-security-web:${springSecurityVersion}"
+    api "org.springframework.security:spring-security-config:${springSecurityVersion}"
+
+    implementation "commons-codec:commons-codec:1.14"
+    implementation "org.slf4j:slf4j-api:1.7.30"
+    compileOnly "javax.servlet:servlet-api:2.5"
+
+    testImplementation "junit:junit:4.12"
+    testImplementation "org.hamcrest:java-hamcrest:2.0.0.0"
+    testImplementation "org.mockito:mockito-core:2.28.2"
+    testCompile "javax.servlet:servlet-api:2.5"
 }
 
 jacocoTestReport {
