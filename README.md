@@ -8,7 +8,7 @@
 
 Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
 
-> If you need to check the old version please check the branch [v0](https://github.com/auth0/auth0-spring-security-api/tree/v0)
+> This library targets Spring 4 and Spring Boot 1. If you are using Spring 5 and Spring Boot 2, please see the [Spring Security 5 API Quickstart](https://auth0.com/docs/quickstart/backend/java-spring-security5).
 
 ## Download
 
