@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.3.1](https://github.com/auth0/auth0-spring-security-api/tree/1.3.1) (2020-04-24)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.3.0...1.3.1)
+
+**Fixed**
+- Expose public API dependencies as api scope and update versions [\#45](https://github.com/auth0/auth0-spring-security-api/pull/45) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.3.0](https://github.com/auth0/auth0-spring-security-api/tree/1.3.0) (2020-02-07)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.6...1.3.0)
 
