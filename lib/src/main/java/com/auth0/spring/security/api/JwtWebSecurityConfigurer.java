@@ -102,7 +102,7 @@ public class JwtWebSecurityConfigurer {
                 .securityContextRepository(new BearerSecurityContextRepository())
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                .authenticationEntryPoint(new JwtAuthenticationEntryPoint(audience, issuer))
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
