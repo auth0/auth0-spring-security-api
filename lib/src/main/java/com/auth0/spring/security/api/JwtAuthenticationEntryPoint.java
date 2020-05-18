@@ -20,9 +20,9 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        response.setHeader(
+        response.addHeader(
                 "WWW-Authenticate",
-                String.format("Bearer realm=\"%s\", authorization_uri=\"%soauth/token", this.audience, this.issuer)
+                String.format("Bearer realm=\"%s\", authorization_uri=\"%soauth/token\"", this.audience, this.issuer)
         );
 
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
