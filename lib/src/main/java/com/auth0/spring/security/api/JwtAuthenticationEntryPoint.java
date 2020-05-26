@@ -1,5 +1,6 @@
 package com.auth0.spring.security.api;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 
@@ -20,9 +21,11 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
+        String modifiedIssuer = this.issuer.endsWith("/") ? this.issuer.substring(0, this.issuer.length() - 1) : this.issuer;
+
         response.addHeader(
-                "WWW-Authenticate",
-                String.format("Bearer realm=\"%s\", authorization_uri=\"%soauth/token\"", this.audience, this.issuer)
+                HttpHeaders.WWW_AUTHENTICATE,
+                String.format("Bearer realm=\"%s\", authorization_uri=\"%s/authorize\"", this.audience, modifiedIssuer)
         );
 
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
