@@ -19,7 +19,10 @@ public class JwtAuthenticationEntryPointTest {
         AuthenticationException exception = mock(AuthenticationException.class);
 
         entryPoint.commence(request, response, exception);
+        verify(response).addHeader(
+                "WWW-Authenticate",
+                "Bearer error=\"Invalid access token\""
+        );
         verify(response).sendError(401, "Unauthorized");
     }
-
 }
