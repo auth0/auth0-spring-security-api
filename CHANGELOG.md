@@ -1,5 +1,35 @@
 # Change Log
 
+## [1.3.1](https://github.com/auth0/auth0-spring-security-api/tree/1.3.1) (2020-04-24)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.3.0...1.3.1)
+
+**Fixed**
+- Expose public API dependencies as api scope and update versions [\#45](https://github.com/auth0/auth0-spring-security-api/pull/45) ([jimmyjames](https://github.com/jimmyjames))
+
+## [1.3.0](https://github.com/auth0/auth0-spring-security-api/tree/1.3.0) (2020-02-07)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.6...1.3.0)
+
+**Added**
+- Extract authorities from permissions claim [\#40](https://github.com/auth0/auth0-spring-security-api/pull/40) ([jimmyjames](https://github.com/jimmyjames))
+
+## [1.2.6](https://github.com/auth0/auth0-spring-security-api/tree/1.2.6) (2019-09-26)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.5...1.2.6)
+
+**Security**
+- Update dependencies to address CVE [\#37](https://github.com/auth0/auth0-spring-security-api/pull/37) ([jimmyjames](https://github.com/jimmyjames))
+
+## [1.2.5](https://github.com/auth0/auth0-spring-security-api/tree/1.2.5) (2019-08-15)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.4...1.2.5)
+
+**Security**
+- Update jackson-databind to address CVE-2019-14379 and CVE-2019-14439 [\#33](https://github.com/auth0/auth0-spring-security-api/pull/33) ([jimmyjames](https://github.com/jimmyjames))
+
+## [1.2.4](https://github.com/auth0/auth0-spring-security-api/tree/1.2.4) (2019-07-03)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.3...1.2.4)
+
+**Security**
+- Bump dependency versions [\#31](https://github.com/auth0/auth0-spring-security-api/pull/31) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.2.3](https://github.com/auth0/auth0-spring-security-api/tree/1.2.3) (2019-06-04)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.2.2...1.2.3)
 

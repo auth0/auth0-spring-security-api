@@ -8,7 +8,7 @@
 
 Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
 
-> If you need to check the old version please check the branch [v0](https://github.com/auth0/auth0-spring-security-api/tree/v0)
+> This library targets Spring 4 and Spring Boot 1. If you are using Spring 5 and Spring Boot 2, please see the [Spring Security 5 API Quickstart](https://auth0.com/docs/quickstart/backend/java-spring-security5).
 
 ## Download
 
@@ -18,19 +18,19 @@ Get Auth0 Spring Security API using Maven:
 <dependency>
     <groupId>com.auth0</groupId>
     <artifactId>auth0-spring-security-api</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.1</version>
 </dependency>
 ```
 
 or Gradle:
 
 ```gradle
-implementation 'com.auth0:auth0-spring-security-api:1.2.3'
+implementation 'com.auth0:auth0-spring-security-api:1.3.1'
 ```
 
 ## Usage
 
-Inside a `WebSecurityConfigurerAdapter` you can configure your API to only accept `RS256` signed JWTs
+Inside a `WebSecurityConfigurerAdapter` you can configure your API to only accept `RS256` signed JWTs:
 
 ```java
 @EnableWebSecurity
@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-or for `HS256` signed JWTs
+or for `HS256` signed JWTs:
 
 ```java
 @EnableWebSecurity
@@ -67,20 +67,29 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 > If you need to configure several allowed issuers use the `JwtWebSecurityConfigurer` signatures which accept a `String[] issuers`.
 
 
-Then using Spring Security `HttpSecurity` you can specify which paths requires authentication
+Then using Spring Security `HttpSecurity` you can specify which paths requires authentication:
 
 ```java
     http.authorizeRequests()
         .antMatchers("/api/**").fullyAuthenticated();
 ```
 
-and you can even specify that the JWT should have a single or several scopes
+To restrict access based on the presence of a specific scope or permission claim, you can use the `hasAuthority` method.
+Scope and permissions claim values are prefixed with `SCOPE_` and `PERMISSION_`, respectively.
+
+To require a specific scope (`read:users` in the example below):
 
 ```java
     http.authorizeRequests()
-        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("SCOPE_read:users");
 ```
 
+To require a specific permission (`admin` in the example below):
+
+```java
+    http.authorizeRequests()
+        .antMatchers(HttpMethod.GET, "/api/admin/**").hasAuthority("PERMISSION_admin");
+```
 
 `JwtWebSecurityConfigurer#configure(HttpSecurity)` also returns `HttpSecurity` so you can do the following:
 
@@ -95,7 +104,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .forRS256("YOUR_API_AUDIENCE", "YOUR_API_ISSUER")
                 .configure(http)
                 .authorizeRequests()
-                        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("read:users");
+                        .antMatchers(HttpMethod.GET, "/api/users/**").hasAuthority("SCOPE_read:users")
+                        .antMatchers(HttpMethod.GET, "/api/admin/**").hasAuthority("PERMISSION_admin");
     }
 }
 ```
