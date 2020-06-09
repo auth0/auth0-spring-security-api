@@ -16,7 +16,7 @@ public class JwtAccessDeniedHandlerTest {
         JwtAccessDeniedHandler handler = new JwtAccessDeniedHandler();
         HttpServletRequest request = mock(HttpServletRequest.class);
         HttpServletResponse response = mock(HttpServletResponse.class);
-        AccessDeniedException exception = new AccessDeniedException("Forbidden");// mock(AccessDeniedException.class);
+        AccessDeniedException exception = new AccessDeniedException("Forbidden");
 
         handler.handle(request, response, exception);
         verify(response).addHeader(
