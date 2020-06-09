@@ -103,6 +103,7 @@ public class JwtWebSecurityConfigurer {
                 .and()
                 .exceptionHandling()
                 .authenticationEntryPoint(new JwtAuthenticationEntryPoint())
+                .accessDeniedHandler(new JwtAccessDeniedHandler())
                 .and()
                 .httpBasic().disable()
                 .csrf().disable()
