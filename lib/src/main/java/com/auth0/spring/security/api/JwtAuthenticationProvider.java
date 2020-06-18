@@ -21,23 +21,31 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     private static Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
     private final byte[] secret;
-    private final String issuer;
+    private final String[] issuers;
     private final String audience;
     private final JwkProvider jwkProvider;
 
     private long leeway = 0;
 
     public JwtAuthenticationProvider(byte[] secret, String issuer, String audience) {
+        this(secret, new String[]{issuer}, audience);
+    }
+
+    public JwtAuthenticationProvider(JwkProvider jwkProvider, String issuer, String audience) {
+        this(jwkProvider, new String[]{issuer}, audience);
+    }
+
+    public JwtAuthenticationProvider(byte[] secret, String[] issuers, String audience) {
         this.secret = secret;
-        this.issuer = issuer;
+        this.issuers = issuers;
         this.audience = audience;
         this.jwkProvider = null;
     }
 
-    public JwtAuthenticationProvider(JwkProvider jwkProvider, String issuer, String audience) {
+    public JwtAuthenticationProvider(JwkProvider jwkProvider,  String[] issuers, String audience) {
         this.jwkProvider = jwkProvider;
         this.secret = null;
-        this.issuer = issuer;
+        this.issuers = issuers;
         this.audience = audience;
     }
 
@@ -76,7 +84,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 
     private JWTVerifier jwtVerifier(JwtAuthentication authentication) throws AuthenticationException {
         if (secret != null) {
-            return providerForHS256(secret, issuer, audience, leeway);
+            return providerForHS256(secret, issuers, audience, leeway);
         }
         final String kid = authentication.getKeyId();
         if (kid == null) {
@@ -87,7 +95,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
         try {
             final Jwk jwk = jwkProvider.get(kid);
-            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuer, audience, leeway);
+            return providerForRS256((RSAPublicKey) jwk.getPublicKey(), issuers, audience, leeway);
         } catch (SigningKeyNotFoundException e) {
             throw new AuthenticationServiceException("Could not retrieve jwks from issuer", e);
         } catch (InvalidPublicKeyException e) {
@@ -97,17 +105,17 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
         }
     }
 
-    private static JWTVerifier providerForRS256(RSAPublicKey publicKey, String issuer, String audience, long leeway) {
+    private static JWTVerifier providerForRS256(RSAPublicKey publicKey, String[] issuers, String audience, long leeway) {
         return JWT.require(Algorithm.RSA256(publicKey, null))
-                .withIssuer(issuer)
+                .withIssuer(issuers)
                 .withAudience(audience)
                 .acceptLeeway(leeway)
                 .build();
     }
 
-    private static JWTVerifier providerForHS256(byte[] secret, String issuer, String audience, long leeway) {
+    private static JWTVerifier providerForHS256(byte[] secret, String[] issuers, String audience, long leeway) {
         return JWT.require(Algorithm.HMAC256(secret))
-                .withIssuer(issuer)
+                .withIssuer(issuers)
                 .withAudience(audience)
                 .acceptLeeway(leeway)
                 .build();

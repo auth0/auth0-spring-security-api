@@ -64,6 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 > If you need further customization (like a leeway for JWT verification) use the `JwtWebSecurityConfigurer` signatures which accept a `JwtAuthenticationProvider`.
 
+> If you need to configure several allowed issuers use the `JwtWebSecurityConfigurer` signatures which accept a `String[] issuers`.
+
 
 Then using Spring Security `HttpSecurity` you can specify which paths requires authentication:
 
