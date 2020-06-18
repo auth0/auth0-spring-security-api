@@ -1,5 +1,12 @@
 # Change Log
 
+## [1.4.0](https://github.com/auth0/auth0-spring-security-api/tree/1.4.0) (2020-06-18)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.3.1...1.4.0)
+
+**Added**
+- Add WWW-Authenticate header for 401 and 403 requests [\#51](https://github.com/auth0/auth0-spring-security-api/pull/51) ([jimmyjames](https://github.com/jimmyjames))
+- Deal with list of issuers in JwtAuthenticationProvider [\#30](https://github.com/auth0/auth0-spring-security-api/pull/30) ([coperator](https://github.com/coperator))
+
 ## [1.3.1](https://github.com/auth0/auth0-spring-security-api/tree/1.3.1) (2020-04-24)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.3.0...1.3.1)
 
