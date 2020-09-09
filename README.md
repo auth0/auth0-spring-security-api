@@ -5,6 +5,7 @@
 [![Maven][maven-badge]][maven-url]
 [![Download][jcenter-badge]][jcenter-url]
 [![codecov][codecov-badge]][codecov-url]
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api?ref=badge_shield)
 
 Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
 
@@ -154,3 +155,6 @@ This project is licensed under the MIT license. See the [LICENSE](LICENSE) file 
 [jcenter-url]: https://bintray.com/auth0/java/auth0-spring-security-api/_latestVersion
 [codecov-badge]: https://codecov.io/gh/auth0/auth0-spring-security-api/branch/master/graph/badge.svg
 [codecov-url]: https://codecov.io/gh/auth0/auth0-spring-security-api
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api?ref=badge_large)
