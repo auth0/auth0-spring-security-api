@@ -11,6 +11,28 @@ Spring Security integration with Auth0 to secure your API with Json Web Tokens (
 
 > This library targets Spring 4 and Spring Boot 1. If you are using Spring 5 and Spring Boot 2, please see the [Spring Security 5 API Quickstart](https://auth0.com/docs/quickstart/backend/java-spring-security5).
 
+## Security Considerations
+
+This library uses Spring Security 4, and is targeted at applications using Spring 4 and/or Spring Boot 1.
+
+The following are vulnerabilities that could affect this library when used with Spring 4/Boot 1:
+- [CVE-2021-22112 ](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-22112) is a medium severity vulnerability in Spring Security (`org.springframework.security:spring-security-web`) 5.4.x prior to 5.4.4, 5.3.x prior to 5.3.8.RELEASE, and 5.2.x prior to 5.2.9.RELEASE.
+  - 5.2.x prior to 5.2.9.RELEASE.
+  - 5.3.x prior to 5.3.8.RELASE.
+  - 5.4.x prior to 5.4.4.
+- [CVE-2021-22060](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-22060) is a medium severity vulnerability in `org.springframework:spring-core` affecting:
+  - 5.2.x prior to 5.2.19.RELEASE.
+  - 5.3.x prior to 5.3.14.
+- [CVE-2021-22096](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-22096) is a medium severity vulnerability in `org.springframework:spring-core` affecting:
+  - 5.2.x prior to 5.2.18.
+  - 5.3.x prior to 5.3.12.
+
+It is recommended that projects using this library upgrade to at least:
+- `org.springframework.security:spring-security-web` to `5.2.9.RELEASE`, `5.3.8.RELASE`, `5.4.4`, or better
+- `org.springframework:spring-core` to `5.2.19.RELEASE`, `5.3.14`, or better
+
+💡 Developers will often find it more convenient to use's Spring's native, out-of-the-box OAuth2 support. Please review Auth0's [Spring Boot API quickstart](https://auth0.com/docs/quickstart/backend/java-spring-security5/01-authorization) for guidance on that implementation path.
+
 ## Download
 
 Get Auth0 Spring Security API using Maven:
