@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.4.2](https://github.com/auth0/auth0-spring-security-api/tree/1.4.2) (2022-01-19)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.4.1...1.4.2)
+
+**Security**
+- Update java jwt and jwks [\#62](https://github.com/auth0/auth0-spring-security-api/pull/62) ([poovamraj](https://github.com/poovamraj))
+
 ## [1.4.1](https://github.com/auth0/auth0-spring-security-api/tree/1.4.1) (2021-02-25)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.4.0...1.4.1)
 
