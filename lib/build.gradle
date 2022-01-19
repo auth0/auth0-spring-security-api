@@ -33,7 +33,7 @@ compileJava {
 ext.springSecurityVersion = '4.2.20.RELEASE'
 
 dependencies {
-    api "com.auth0:java-jwt:3.13.0"
+    api "com.auth0:java-jwt:3.18.3"
     api "com.auth0:jwks-rsa:0.15.0"
     api "org.springframework.security:spring-security-core:${springSecurityVersion}"
     api "org.springframework.security:spring-security-web:${springSecurityVersion}"
