@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.5.0](https://github.com/auth0/auth0-spring-security-api/tree/1.5.0) (2022-03-14)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.4.1...1.5.0)
+
+**Changed**
+- Update auth0 dependencies to address CVE-2020-36518 [\#66](https://github.com/auth0/auth0-spring-security-api/pull/66) ([jimmyjames](https://github.com/jimmyjames))
+
+**Security**
+- Update auth0 dependencies to address CVE-2020-36518 [\#66](https://github.com/auth0/auth0-spring-security-api/pull/66) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.4.2](https://github.com/auth0/auth0-spring-security-api/tree/1.4.2) (2022-01-20)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.4.1...1.4.2)
 
