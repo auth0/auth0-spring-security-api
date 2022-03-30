@@ -1,5 +1,11 @@
 # Change Log
 
+## [1.5.1](https://github.com/auth0/auth0-spring-security-api/tree/1.5.1) (2022-03-30)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.5.0...1.5.1)
+
+**Security**
+- Bump transitive jackson dependencies in auth0 libraries [\#68](https://github.com/auth0/auth0-spring-security-api/pull/68) ([poovamraj](https://github.com/poovamraj))
+
 ## [1.5.0](https://github.com/auth0/auth0-spring-security-api/tree/1.5.0) (2022-03-14)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.4.1...1.5.0)
 
