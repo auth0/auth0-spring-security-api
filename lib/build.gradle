@@ -33,14 +33,14 @@ compileJava {
 ext.springSecurityVersion = '4.2.20.RELEASE'
 
 dependencies {
-    api "com.auth0:java-jwt:3.19.1"
-    api "com.auth0:jwks-rsa:0.21.1"
+    api "com.auth0:java-jwt:3.19.3"
+    api "com.auth0:jwks-rsa:0.21.2"
     api "org.springframework.security:spring-security-core:${springSecurityVersion}"
     api "org.springframework.security:spring-security-web:${springSecurityVersion}"
     api "org.springframework.security:spring-security-config:${springSecurityVersion}"
 
-    implementation "commons-codec:commons-codec:1.14"
-    implementation "org.slf4j:slf4j-api:1.7.30"
+    implementation "commons-codec:commons-codec:1.15"
+    implementation "org.slf4j:slf4j-api:1.7.36"
     compileOnly "javax.servlet:servlet-api:2.5"
 
     testImplementation "junit:junit:4.12"
