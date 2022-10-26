@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.5.2](https://github.com/auth0/auth0-spring-security-api/tree/1.5.2) (2022-10-26)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.5.1...1.5.2)
+
+**Changed**
+- Update Gradle and configure ship CLI and orb [\#73](https://github.com/auth0/auth0-spring-security-api/pull/73) ([jimmyjames](https://github.com/jimmyjames))
+
+**Security**
+- Update dependencies to address CVE-2022-42003 [\#74](https://github.com/auth0/auth0-spring-security-api/pull/74) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.5.1](https://github.com/auth0/auth0-spring-security-api/tree/1.5.1) (2022-03-30)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.5.0...1.5.1)
 
