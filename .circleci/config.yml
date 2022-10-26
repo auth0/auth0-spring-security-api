@@ -1,6 +1,7 @@
 version: 2.1
 
 orbs:
+  ship: auth0/ship@0
   codecov: codecov/codecov@3
 
 jobs:
@@ -32,4 +33,18 @@ jobs:
           paths:
             - ~/.m2
           key: v1-dependencies-{{ checksum "lib/build.gradle" }}
-          
+workflows:
+  build-and-test:
+    jobs:
+      - build
+      - ship/java-publish:
+          prefix-tag: false
+          context:
+            - publish-gh
+            - publish-sonatype
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - build
