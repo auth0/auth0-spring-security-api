@@ -18,7 +18,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
-import static org.junit.Assert.*;
 
 public class PreAuthenticatedAuthenticationJsonWebTokenTest {
 
@@ -27,7 +26,7 @@ public class PreAuthenticatedAuthenticationJsonWebTokenTest {
     private Algorithm hmacAlgorithm;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         hmacAlgorithm = Algorithm.HMAC256("secret");
     }
 

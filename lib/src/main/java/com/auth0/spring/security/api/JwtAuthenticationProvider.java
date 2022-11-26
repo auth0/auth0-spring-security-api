@@ -18,7 +18,7 @@ import java.security.interfaces.RSAPublicKey;
 
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    private static Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationProvider.class);
 
     private final byte[] secret;
     private final String[] issuers;

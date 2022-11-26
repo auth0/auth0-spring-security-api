@@ -2,14 +2,13 @@ package com.auth0.spring.security.api;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.spring.security.api.authentication.AuthenticationJsonWebToken;
 import com.auth0.spring.security.api.authentication.PreAuthenticatedAuthenticationJsonWebToken;
 import org.junit.Test;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.web.context.HttpRequestResponseHolder;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -18,7 +17,7 @@ import static org.mockito.Mockito.*;
 public class BearerSecurityContextRepositoryTest {
 
     @Test
-    public void shouldDoNothingOnContextSave() throws Exception {
+    public void shouldDoNothingOnContextSave() {
         BearerSecurityContextRepository repository = new BearerSecurityContextRepository();
         SecurityContext context = mock(SecurityContext.class);
         HttpServletRequest request = mock(HttpServletRequest.class);

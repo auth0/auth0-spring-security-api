@@ -1,5 +1,9 @@
 buildscript {
-    version = "1.5.2"
+    version = "2.0.0"
+}
+
+plugins {
+    id "io.spring.dependency-management" version "1.1.0"
 }
 
 apply plugin: 'idea'
@@ -11,6 +15,12 @@ def signingKeyPwd = findProperty('signingPassword')
 
 signing {
     useInMemoryPgpKeys(signingKey, signingKeyPwd)
+}
+
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.security:spring-security-bom:6.0.0"
+    }
 }
 
 oss {
@@ -38,27 +48,29 @@ oss {
 logger.lifecycle("Using version ${version} for ${group}.${name}")
 
 compileJava {
-    sourceCompatibility '1.7'
-    targetCompatibility '1.7'
+    sourceCompatibility '17'
+    targetCompatibility '17'
+}
+compileTestJava {
+    sourceCompatibility '17'
+    targetCompatibility '17'
 }
 
-ext.springSecurityVersion = '4.2.20.RELEASE'
-
 dependencies {
-    api "com.auth0:java-jwt:3.19.3"
+    api "com.auth0:java-jwt:4.2.1"
     api "com.auth0:jwks-rsa:0.21.2"
-    api "org.springframework.security:spring-security-core:${springSecurityVersion}"
-    api "org.springframework.security:spring-security-web:${springSecurityVersion}"
-    api "org.springframework.security:spring-security-config:${springSecurityVersion}"
+    api "org.springframework.security:spring-security-core"
+    api "org.springframework.security:spring-security-web"
+    api "org.springframework.security:spring-security-config"
 
     implementation "commons-codec:commons-codec:1.15"
-    implementation "org.slf4j:slf4j-api:1.7.36"
-    compileOnly "javax.servlet:servlet-api:2.5"
+    implementation "org.slf4j:slf4j-api:2.0.5"
+    compileOnly "jakarta.servlet:jakarta.servlet-api:6.0.0"
 
-    testImplementation "junit:junit:4.12"
-    testImplementation "org.hamcrest:java-hamcrest:2.0.0.0"
-    testImplementation "org.mockito:mockito-core:2.28.2"
-    testCompile "javax.servlet:servlet-api:2.5"
+    testImplementation "junit:junit:4.13.2"
+    testImplementation "org.hamcrest:hamcrest:2.2"
+    testImplementation "org.mockito:mockito-core:4.9.0"
+    testImplementation "jakarta.servlet:jakarta.servlet-api:6.0.0"
 }
 
 jacocoTestReport {
@@ -81,7 +93,7 @@ clean.doFirst {
 
 // Creates a version.txt file containing the current version of the SDK.
 // This file is picked up and parsed by our Ship Orb to determine the version.
-task exportVersion()  {
+task exportVersion() {
     doLast {
         new File(rootDir, "version.txt").text = "$version"
     }
