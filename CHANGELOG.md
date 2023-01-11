@@ -1,5 +1,14 @@
 # Change Log
 
+## [1.5.3](https://github.com/auth0/auth0-spring-security-api/tree/1.5.3) (2023-01-11)
+[Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.5.2...1.5.3)
+
+This patch release does not contain any functional changes, but is being released using an updated signing key for verification as part of our commitment to best security practices. 
+Please review [the README note for additional details.](https://github.com/auth0/auth0-spring-security-api/blob/master/README.md)
+
+**Security**
+- Update auth0 dependencies [\#80](https://github.com/auth0/auth0-spring-security-api/pull/80) ([jimmyjames](https://github.com/jimmyjames))
+
 ## [1.5.2](https://github.com/auth0/auth0-spring-security-api/tree/1.5.2) (2022-10-26)
 [Full Changelog](https://github.com/auth0/auth0-spring-security-api/compare/1.5.1...1.5.2)
 

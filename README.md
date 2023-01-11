@@ -7,6 +7,11 @@
 [![codecov][codecov-badge]][codecov-url]
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api?ref=badge_shield)
 
+> **Note**
+> As part of our ongoing commitment to best security practices, we have rotated the signing keys used to sign previous releases of this SDK. As a result, new patch builds have been released using the new signing key. Please upgrade at your earliest convenience.
+> 
+> While this change won't affect most developers, if you have implemented a dependency signature validation step in your build process, you may notice a warning that past releases can't be verified. This is expected, and a result of the key rotation process. Updating to the latest version will resolve this for you.
+
 Spring Security integration with Auth0 to secure your API with Json Web Tokens (JWT)
 
 > This library targets Spring 4 and Spring Boot 1. If you are using Spring 5 and Spring Boot 2, please see the [Spring Security 5 API Quickstart](https://auth0.com/docs/quickstart/backend/java-spring-security5).
