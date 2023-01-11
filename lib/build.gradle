@@ -1,24 +1,13 @@
-buildscript {
-    version = "1.5.2"
-}
-
 apply plugin: 'idea'
 apply plugin: 'com.auth0.gradle.oss-library.java'
 apply plugin: 'jacoco'
-
-def signingKey = findProperty('signingKey')
-def signingKeyPwd = findProperty('signingPassword')
-
-signing {
-    useInMemoryPgpKeys(signingKey, signingKeyPwd)
-}
 
 oss {
     name 'auth0-spring-security-api'
     repository 'auth0-spring-security-api'
     organization 'auth0'
     description 'Auth0 Java Spring integration for API'
-    skipAssertSigningConfiguration true
+
     developers {
         auth0 {
             displayName = 'Auth0'
