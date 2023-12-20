@@ -7,6 +7,7 @@ oss {
     repository 'auth0-spring-security-api'
     organization 'auth0'
     description 'Auth0 Java Spring integration for API'
+    skipAssertSigningConfiguration true
 
     developers {
         auth0 {
@@ -26,9 +27,16 @@ oss {
 
 logger.lifecycle("Using version ${version} for ${group}.${name}")
 
+def signingKey = findProperty('signingKey')
+def signingKeyPwd = findProperty('signingPassword')
+
 compileJava {
     sourceCompatibility '1.7'
     targetCompatibility '1.7'
+}
+
+signing {
+    useInMemoryPgpKeys(signingKey, signingKeyPwd)
 }
 
 ext.springSecurityVersion = '4.2.20.RELEASE'
@@ -66,12 +74,4 @@ test {
 
 clean.doFirst {
     new File('CHANGELOG.md.release').delete()
-}
-
-// Creates a version.txt file containing the current version of the SDK.
-// This file is picked up and parsed by our Ship Orb to determine the version.
-task exportVersion()  {
-    doLast {
-        new File(rootDir, "version.txt").text = "$version"
-    }
 }
