@@ -6,6 +6,7 @@
 [![Download][jcenter-badge]][jcenter-url]
 [![codecov][codecov-badge]][codecov-url]
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fauth0%2Fauth0-spring-security-api?ref=badge_shield)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/auth0/auth0-spring-security-api)
 
 > **Note**
 > As part of our ongoing commitment to best security practices, we have rotated the signing keys used to sign previous releases of this SDK. As a result, new patch builds have been released using the new signing key. Please upgrade at your earliest convenience.
